@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="JavaScript实现web浏览器本地存储山山师傅出的第一个小任务，用JavaScript实现web浏览器的本地存储：模拟百度搜索历史记录，将搜索过的内容用本地存储保存并显示出来。这是一篇小白水文。 localstoragelocalstorage的主要函数有  localstorage.setItem(‘属性名’,’属性值’) : 存入lo   localstorage.getItem(‘属性">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript实现web浏览器本地存储">
+<meta property="og:url" content="http://yoursite.com/2020/06/14/JavaScript%E5%AE%9E%E7%8E%B0web%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/index.html">
+<meta property="og:site_name" content="FXXY">
+<meta property="og:description" content="JavaScript实现web浏览器本地存储山山师傅出的第一个小任务，用JavaScript实现web浏览器的本地存储：模拟百度搜索历史记录，将搜索过的内容用本地存储保存并显示出来。这是一篇小白水文。 localstoragelocalstorage的主要函数有  localstorage.setItem(‘属性名’,’属性值’) : 存入lo   localstorage.getItem(‘属性">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/1571747587921-f2fe03a7-4dfc-41b3-88ef-a517172dcee7.png">
+<meta property="article:published_time" content="2020-06-14T14:42:15.534Z">
+<meta property="article:modified_time" content="2020-06-14T14:41:51.895Z">
+<meta property="article:author" content="FXXY">
+<meta property="article:tag" content="javascript">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/1571747587921-f2fe03a7-4dfc-41b3-88ef-a517172dcee7.png">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+        
+    
+    <!-- title -->
+    <title>JavaScript实现web浏览器本地存储</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+      
+<link rel="stylesheet" href="/css/rtl.css">
+
+    
+    <!-- rss -->
+    
+    
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/links/">links</a></li>
+         
+          <li><a href="/tags/">tags</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2020/06/14/python%E7%88%AC%E8%99%AB2.0/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2020/06/14/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yoursite.com/2020/06/14/JavaScript%E5%AE%9E%E7%8E%B0web%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://yoursite.com/2020/06/14/JavaScript%E5%AE%9E%E7%8E%B0web%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/&text=JavaScript实现web浏览器本地存储" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yoursite.com/2020/06/14/JavaScript%E5%AE%9E%E7%8E%B0web%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/&title=JavaScript实现web浏览器本地存储" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yoursite.com/2020/06/14/JavaScript%E5%AE%9E%E7%8E%B0web%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/&is_video=false&description=JavaScript实现web浏览器本地存储" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=JavaScript实现web浏览器本地存储&body=Check out this article: http://yoursite.com/2020/06/14/JavaScript%E5%AE%9E%E7%8E%B0web%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://yoursite.com/2020/06/14/JavaScript%E5%AE%9E%E7%8E%B0web%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/&title=JavaScript实现web浏览器本地存储" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://yoursite.com/2020/06/14/JavaScript%E5%AE%9E%E7%8E%B0web%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/&title=JavaScript实现web浏览器本地存储" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yoursite.com/2020/06/14/JavaScript%E5%AE%9E%E7%8E%B0web%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/&title=JavaScript实现web浏览器本地存储" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://yoursite.com/2020/06/14/JavaScript%E5%AE%9E%E7%8E%B0web%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/&title=JavaScript实现web浏览器本地存储" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yoursite.com/2020/06/14/JavaScript%E5%AE%9E%E7%8E%B0web%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/&name=JavaScript实现web浏览器本地存储&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=http://yoursite.com/2020/06/14/JavaScript%E5%AE%9E%E7%8E%B0web%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/&t=JavaScript实现web浏览器本地存储" target="_blank" rel="noopener"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#JavaScript实现web浏览器本地存储"><span class="toc-number">1.</span> <span class="toc-text">JavaScript实现web浏览器本地存储</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#localstorage"><span class="toc-number">1.1.</span> <span class="toc-text">localstorage</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JS代码"><span class="toc-number">1.2.</span> <span class="toc-text">JS代码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#存储"><span class="toc-number">1.2.1.</span> <span class="toc-text">存储</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#取出"><span class="toc-number">1.2.2.</span> <span class="toc-text">取出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#html代码"><span class="toc-number">1.2.3.</span> <span class="toc-text">html代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小结"><span class="toc-number">1.3.</span> <span class="toc-text">小结</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        JavaScript实现web浏览器本地存储
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">FXXY</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2020-06-14T14:42:15.534Z" itemprop="datePublished">2020-06-14</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/javascript/" rel="tag">javascript</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h1 id="JavaScript实现web浏览器本地存储"><a href="#JavaScript实现web浏览器本地存储" class="headerlink" title="JavaScript实现web浏览器本地存储"></a>JavaScript实现web浏览器本地存储</h1><p>山山师傅出的第一个小任务，用JavaScript实现web浏览器的本地存储：模拟百度搜索历史记录，将搜索过的内容用本地存储保存并显示出来。这是一篇小白水文。</p>
+<h2 id="localstorage"><a href="#localstorage" class="headerlink" title="localstorage"></a>localstorage</h2><p>localstorage的主要函数有</p>
+<blockquote>
+<p>localstorage.setItem(‘属性名’,’属性值’) : 存入lo</p>
+</blockquote>
+<blockquote>
+<p>localstorage.getItem(‘属性名’)：读取</p>
+</blockquote>
+<blockquote>
+<p>localstorage.clear()：删除</p>
+</blockquote>
+<p>本次存入的数据使用数组方式存入，但是localstorage的存储不支持数组类型，所以要用到JSON的两个函数JSON.stringify()和JSON.parse()，在存数据时将数组序列化成字符串，取出数据时将数据序列化成对象，然后再将对象转化为数组，便于比较和去重。<br>下面两张图来展现一下这几个函数的用法</p>
+<p><img src="https:/fxxy-blog.oss-cn-hangzhou.aliyuncs.com/1571747587921-f2fe03a7-4dfc-41b3-88ef-a517172dcee7.png" alt=""></p>
+<p><strong>PS：此处插播一个遇到的小小问题，就是之前测试时存入数据如果没有用JSON.stringify()将数据转换成相应的JSON 格式的话，那后面如果想用JSON.parse()读取数据是会报错的，因为存入的数据不是JSON格式的，所以解析的时候会报错。</strong></p>
+<h2 id="JS代码"><a href="#JS代码" class="headerlink" title="JS代码"></a>JS代码</h2><h3 id="存储"><a href="#存储" class="headerlink" title="存储"></a>存储</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">saveHistory</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    mySearch = <span class="built_in">document</span>.getElementById(<span class="string">'search_content'</span>).value;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> searchs = [];</span><br><span class="line">    <span class="keyword">var</span> storagesearchs = <span class="built_in">JSON</span>.parse(localStorage.getItem(<span class="string">'searchs'</span>));</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i <span class="keyword">in</span> storagesearchs)&#123;</span><br><span class="line">        searchs.push(storagesearchs[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (searchs === <span class="literal">undefined</span> || searchs.length == <span class="number">0</span>)&#123;</span><br><span class="line">        searchs.push(mySearch);</span><br><span class="line">        localStorage.setItem(<span class="string">'searchs'</span>,<span class="built_in">JSON</span>.stringify(searchs));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        flag = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (searchs.length &lt;= <span class="number">8</span>)&#123;</span><br><span class="line">            <span class="comment">//去重</span></span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">let</span> i <span class="keyword">in</span> searchs)&#123;</span><br><span class="line">                <span class="keyword">if</span>(searchs[i] === mySearch)&#123;</span><br><span class="line">                    flag = <span class="number">0</span>;                        </span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(flag)&#123;</span><br><span class="line">                <span class="keyword">if</span>(searchs.length == <span class="number">8</span>)&#123;</span><br><span class="line">                    searchs.splice(<span class="number">0</span>,<span class="number">1</span>);</span><br><span class="line">                    searchs.push(mySearch);</span><br><span class="line">                    localStorage.setItem(<span class="string">'searchs'</span>,<span class="built_in">JSON</span>.stringify(searchs));</span><br><span class="line"></span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span>&#123;</span><br><span class="line">                    searchs.push(mySearch);</span><br><span class="line">                    localStorage.setItem(<span class="string">'searchs'</span>,<span class="built_in">JSON</span>.stringify(searchs));</span><br><span class="line"></span><br><span class="line">                &#125;</span><br><span class="line">                                </span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">                     </span><br><span class="line">    &#125;</span><br><span class="line">    location.reload();<span class="comment">//函数执行后刷新一次页面</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="取出"><a href="#取出" class="headerlink" title="取出"></a>取出</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">showHistory</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"><span class="comment">//    alert('show');</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">var</span> searchs = [];</span><br><span class="line">    <span class="keyword">var</span> storagesearchs = <span class="built_in">JSON</span>.parse(localStorage.getItem(<span class="string">'searchs'</span>));</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i <span class="keyword">in</span> storagesearchs)&#123;</span><br><span class="line">        searchs.push(storagesearchs[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">var</span> len = searchs.length;</span><br><span class="line">    <span class="keyword">var</span> ul = <span class="built_in">document</span>.getElementById(<span class="string">'search_list'</span>);</span><br><span class="line">    </span><br><span class="line">   </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i=<span class="number">0</span>; i&lt;len; i++)&#123;</span><br><span class="line">        <span class="keyword">var</span> div = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>);</span><br><span class="line">        <span class="keyword">var</span> li = <span class="built_in">document</span>.createElement(<span class="string">'li'</span>);<span class="comment">//创建一个li元素</span></span><br><span class="line">        li.innerHTML = searchs[i];<span class="comment">//将搜索记录写入li中</span></span><br><span class="line">        ul.appendChild(li)<span class="comment">//在ul标签下追加li元素</span></span><br><span class="line">     &#125;        </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="html代码"><a href="#html代码" class="headerlink" title="html代码"></a>html代码</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">title</span>&gt;</span>百度搜索<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">link</span> <span class="attr">href</span>=<span class="string">"https://fonts.googleapis.com/css?family=PT+Sans"</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"./css/style.css"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"scripts/main.js"</span> <span class="attr">async</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">        </span><br><span class="line">    <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">        </span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"searching"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">span</span>&gt;</span></span><br><span class="line"></span><br><span class="line">                    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span> = <span class="string">"search"</span> <span class="attr">id</span> = <span class="string">"search_content"</span> <span class="attr">autocomplete</span>=<span class="string">"off"</span> <span class="attr">placeholder</span>=<span class="string">"请输入搜索内容·······"</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">ul</span> <span class="attr">id</span>=<span class="string">"search_list"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">                </span><br><span class="line">                    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"搜索"</span> <span class="attr">id</span> = <span class="string">'clicking'</span>&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">           </span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>这次的task1学到了很多东西，localstorage，对js函数也有了更深的认识，还有html，css也学到了很多，开心！！重拾代码乐趣！！</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/links/">links</a></li>
+         
+          <li><a href="/tags/">tags</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#JavaScript实现web浏览器本地存储"><span class="toc-number">1.</span> <span class="toc-text">JavaScript实现web浏览器本地存储</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#localstorage"><span class="toc-number">1.1.</span> <span class="toc-text">localstorage</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JS代码"><span class="toc-number">1.2.</span> <span class="toc-text">JS代码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#存储"><span class="toc-number">1.2.1.</span> <span class="toc-text">存储</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#取出"><span class="toc-number">1.2.2.</span> <span class="toc-text">取出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#html代码"><span class="toc-number">1.2.3.</span> <span class="toc-text">html代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小结"><span class="toc-number">1.3.</span> <span class="toc-text">小结</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yoursite.com/2020/06/14/JavaScript%E5%AE%9E%E7%8E%B0web%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://yoursite.com/2020/06/14/JavaScript%E5%AE%9E%E7%8E%B0web%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/&text=JavaScript实现web浏览器本地存储" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yoursite.com/2020/06/14/JavaScript%E5%AE%9E%E7%8E%B0web%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/&title=JavaScript实现web浏览器本地存储" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yoursite.com/2020/06/14/JavaScript%E5%AE%9E%E7%8E%B0web%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/&is_video=false&description=JavaScript实现web浏览器本地存储" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=JavaScript实现web浏览器本地存储&body=Check out this article: http://yoursite.com/2020/06/14/JavaScript%E5%AE%9E%E7%8E%B0web%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://yoursite.com/2020/06/14/JavaScript%E5%AE%9E%E7%8E%B0web%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/&title=JavaScript实现web浏览器本地存储" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://yoursite.com/2020/06/14/JavaScript%E5%AE%9E%E7%8E%B0web%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/&title=JavaScript实现web浏览器本地存储" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yoursite.com/2020/06/14/JavaScript%E5%AE%9E%E7%8E%B0web%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/&title=JavaScript实现web浏览器本地存储" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://yoursite.com/2020/06/14/JavaScript%E5%AE%9E%E7%8E%B0web%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/&title=JavaScript实现web浏览器本地存储" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yoursite.com/2020/06/14/JavaScript%E5%AE%9E%E7%8E%B0web%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/&name=JavaScript实现web浏览器本地存储&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=http://yoursite.com/2020/06/14/JavaScript%E5%AE%9E%E7%8E%B0web%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/&t=JavaScript实现web浏览器本地存储" target="_blank" rel="noopener"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2020
+    FXXY
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/links/">links</a></li>
+         
+          <li><a href="/tags/">tags</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+
+    <!-- jquery -->
+
+<script src="/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+
+<!-- clipboard -->
+
+  
+<script src="/lib/clipboard/clipboard.min.js"></script>
+
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>
