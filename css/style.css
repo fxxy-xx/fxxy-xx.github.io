@@ -1487,67 +1487,51 @@ article .content .caption {
   content: ")";
 }
 .highlight {
-  background: #474949;
-  color: #d1d9e1;
+  background: #161b1d;
+  color: #7ea2b4;
 }
 .highlight .code .comment,
 .highlight .code .quote {
-  color: #969896;
-  font-style: italic;
-}
-.highlight .code .keyword,
-.highlight .code .selector-tag,
-.highlight .code .literal,
-.highlight .code .type,
-.highlight .code .addition {
-  color: #c9c;
-}
-.highlight .code .number,
-.highlight .code .selector-attr,
-.highlight .code .selector-pseudo {
-  color: #f99157;
-}
-.highlight .code .string,
-.highlight .code .doctag,
-.highlight .code .regexp {
-  color: #8abeb7;
-}
-.highlight .code .title,
-.highlight .code .name,
-.highlight .code .section,
-.highlight .code .built_in {
-  color: #b5bd68;
+  color: #7195a8;
 }
 .highlight .code .variable,
 .highlight .code .template-variable,
-.highlight .code .selector-id,
-.highlight .code .class .title {
-  color: #fc6;
-}
-.highlight .code .section,
+.highlight .code .attribute,
+.highlight .code .tag,
 .highlight .code .name,
-.highlight .code .strong {
-  font-weight: bold;
+.highlight .code .regexp,
+.highlight .code .link,
+.highlight .code .selector-id,
+.highlight .code .selector-class {
+  color: #d22d72;
 }
-.highlight .code .symbol,
-.highlight .code .bullet,
-.highlight .code .subst,
+.highlight .code .number,
 .highlight .code .meta,
-.highlight .code .link {
-  color: #f99157;
+.highlight .code .built_in,
+.highlight .code .builtin-name,
+.highlight .code .literal,
+.highlight .code .type,
+.highlight .code .params {
+  color: #935c25;
 }
-.highlight .code .deletion {
-  color: #dc322f;
+.highlight .code .string,
+.highlight .code .symbol,
+.highlight .code .bullet {
+  color: #568c3b;
 }
-.highlight .code .formula {
-  background: #eee8d5;
+.highlight .code .title,
+.highlight .code .section {
+  color: #257fad;
 }
-.highlight .code .attr,
-.highlight .code .attribute {
-  color: #81a2be;
+.highlight .code .keyword,
+.highlight .code .selector-tag {
+  color: #6b6bb8;
 }
 .highlight .code .emphasis {
   font-style: italic;
+}
+.highlight .code .strong {
+  font-weight: bold;
 }
 pre {
   overflow-x: auto;
