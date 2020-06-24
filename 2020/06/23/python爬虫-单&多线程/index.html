@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="FXXY">
+
+
+    <meta name="subtitle" content="FXXY">
+
+
+
+
+<title>python爬虫-单&amp;多线程 | FXXY</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">fxxy&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                    <a class="menu-item" href="/links">Links</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">fxxy&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                    <a class="menu-item" href="/links">Links</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">python爬虫-单&amp;多线程</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2020-06-23&nbsp;&nbsp;14:47:18</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <ul>
+<li>以抓取<a href="https://www.pexels.com/网站图片为例" target="_blank" rel="noopener">https://www.pexels.com/网站图片为例</a></li>
+<li>前置基础：了解HTML的DOM解析结构</li>
+</ul>
+<h2 id="单线程"><a href="#单线程" class="headerlink" title="单线程"></a>单线程</h2><h3 id="获取网页html"><a href="#获取网页html" class="headerlink" title="获取网页html"></a>获取网页html</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> urllib <span class="keyword">import</span> request</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line">headers = &#123;<span class="string">'user-agent'</span>: <span class="string">'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'</span>&#125;</span><br><span class="line">url = <span class="string">'https://www.pexels.com/'</span></span><br><span class="line"></span><br><span class="line">page1=request.Request(url,headers=headers)</span><br><span class="line">page=request.urlopen(page1)</span><br><span class="line"></span><br><span class="line">html=page.read()</span><br><span class="line">print(html)</span><br><span class="line"><span class="keyword">with</span> open(<span class="string">'test.html'</span>,<span class="string">'wb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">    f.write(html)</span><br><span class="line">    f.close()</span><br></pre></td></tr></table></figure>
+
+<h3 id="获取图片img标签"><a href="#获取图片img标签" class="headerlink" title="获取图片img标签"></a>获取图片img标签</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> urllib <span class="keyword">import</span> request</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line">headers = &#123;<span class="string">'user-agent'</span>: <span class="string">'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'</span>&#125;</span><br><span class="line">url = <span class="string">'https://www.pexels.com/'</span></span><br><span class="line"></span><br><span class="line">page1=request.Request(url,headers=headers)</span><br><span class="line">page=request.urlopen(page1)</span><br><span class="line">soup = BeautifulSoup(page,<span class="string">'lxml'</span>)</span><br><span class="line">srcs = soup.find_all(<span class="string">'img'</span>,<span class="string">'photo-item__img'</span>) <span class="comment">#查找class为photo-item__img的img标签</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> src <span class="keyword">in</span> srcs:</span><br><span class="line">    print(src)</span><br></pre></td></tr></table></figure>
+
+<h3 id="截取img标签中的图片url链接"><a href="#截取img标签中的图片url链接" class="headerlink" title="截取img标签中的图片url链接"></a>截取img标签中的图片url链接</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> urllib <span class="keyword">import</span> request</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line">headers = &#123;<span class="string">'user-agent'</span>: <span class="string">'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'</span>&#125;</span><br><span class="line">url = <span class="string">'https://www.pexels.com/'</span></span><br><span class="line"></span><br><span class="line">page1=request.Request(url,headers=headers)</span><br><span class="line">page=request.urlopen(page1)</span><br><span class="line">soup = BeautifulSoup(page,<span class="string">'lxml'</span>)</span><br><span class="line">srcs = soup.find_all(<span class="string">'img'</span>,<span class="string">'photo-item__img'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> src <span class="keyword">in</span> srcs:</span><br><span class="line">    links = src.get(<span class="string">'src'</span>)</span><br><span class="line">    print(links)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.imgur.com/BnNW3ht.png#alt=" alt=""></p>
+<h3 id="将去掉多余参数"><a href="#将去掉多余参数" class="headerlink" title="将去掉多余参数"></a>将去掉多余参数</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> urllib <span class="keyword">import</span> request</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line">headers = &#123;<span class="string">'user-agent'</span>: <span class="string">'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'</span>&#125;</span><br><span class="line">url = <span class="string">'https://www.pexels.com/'</span></span><br><span class="line"></span><br><span class="line">page1=request.Request(url,headers=headers)</span><br><span class="line">page=request.urlopen(page1)</span><br><span class="line">soup = BeautifulSoup(page,<span class="string">'lxml'</span>)</span><br><span class="line">srcs = soup.find_all(<span class="string">'img'</span>,<span class="string">'photo-item__img'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> sr <span class="keyword">in</span> srcs:</span><br><span class="line">    links = sr.get(<span class="string">'src'</span>)</span><br><span class="line">    first_pos = links.index(<span class="string">'?'</span>)</span><br><span class="line">    last_pos = links.index(<span class="string">'500'</span>)</span><br><span class="line"></span><br><span class="line">    split = links[first_pos : last_pos+<span class="number">3</span>]</span><br><span class="line">    links_final = links.replace(split,<span class="string">''</span>)</span><br><span class="line">    print(links_final)</span><br></pre></td></tr></table></figure>
+
+<h3 id="写入本地"><a href="#写入本地" class="headerlink" title="写入本地"></a>写入本地</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> urllib <span class="keyword">import</span> request</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> codecs</span><br><span class="line"></span><br><span class="line">headers = &#123;<span class="string">'user-agent'</span>: <span class="string">'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'</span>&#125;</span><br><span class="line">url = <span class="string">'https://www.pexels.com/'</span></span><br><span class="line"></span><br><span class="line">page1=request.Request(url,headers=headers)</span><br><span class="line">page=request.urlopen(page1)</span><br><span class="line">soup = BeautifulSoup(page,<span class="string">'lxml'</span>)</span><br><span class="line">srcs = soup.find_all(<span class="string">'img'</span>,<span class="string">'photo-item__img'</span>)</span><br><span class="line"></span><br><span class="line">x=<span class="number">1</span></span><br><span class="line"><span class="keyword">for</span> sr <span class="keyword">in</span> srcs:</span><br><span class="line">    url = sr.get(<span class="string">'src'</span>)</span><br><span class="line">    first_pos = links.index(<span class="string">'?'</span>)</span><br><span class="line">    last_pos = links.index(<span class="string">'5'</span>)</span><br><span class="line"></span><br><span class="line">    split = links[first_pos : last_pos+<span class="number">3</span>]</span><br><span class="line">    url = links.replace(split,<span class="string">' '</span>)</span><br><span class="line">    path = <span class="string">r'D:\\img\\'</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> <span class="string">'https'</span> <span class="keyword">in</span> url:</span><br><span class="line">        url1 = request.Request(url,headers = headers)</span><br><span class="line">        url = request.urlopen(url1)</span><br><span class="line">        f = codecs.open(path+<span class="string">'%s.jpg'</span>%(x), <span class="string">'wb'</span>)</span><br><span class="line">        x+=<span class="number">1</span></span><br><span class="line">        f.write(url.read())</span><br><span class="line">        f.close()</span><br></pre></td></tr></table></figure>
+
+<h3 id="最终版本"><a href="#最终版本" class="headerlink" title="最终版本"></a>最终版本</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">from</span> urllib <span class="keyword">import</span> request</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cut_url</span><span class="params">(link)</span>:</span><span class="comment">#在img标签中获取到图片的url，并去掉多余的参数</span></span><br><span class="line">    link = link.get(<span class="string">'src'</span>)<span class="comment">#获取img标签中的图片url</span></span><br><span class="line">    first_pos = link.index(<span class="string">'?'</span>)</span><br><span class="line">    last_pos = link.index(<span class="string">'5'</span>)</span><br><span class="line"></span><br><span class="line">    split = link[first_pos : last_pos+<span class="number">3</span>]<span class="comment">#截取多余的参数</span></span><br><span class="line">    url = link.replace(split,<span class="string">''</span>)<span class="comment">#用replace函数将多余的参数去掉</span></span><br><span class="line">    <span class="keyword">return</span> url</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">save_img</span><span class="params">(url,x)</span>:</span><span class="comment">#保存图片</span></span><br><span class="line">    <span class="keyword">if</span> <span class="string">'https'</span> <span class="keyword">in</span> url:</span><br><span class="line">        url = request.Request(url,headers = headers)</span><br><span class="line">        file = request.urlopen(url).read()</span><br><span class="line">        path = <span class="string">'./img'</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> os.path.exists(path):</span><br><span class="line">            path = path + <span class="string">'/'</span></span><br><span class="line">            <span class="keyword">with</span> open(path+<span class="string">'%s.jpg'</span>%x,<span class="string">'wb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">                f.write(file)</span><br><span class="line">                f.close()</span><br><span class="line">                flag = <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            os.mkdir(path)</span><br><span class="line">            path = path + <span class="string">'/'</span></span><br><span class="line">            <span class="keyword">with</span> open(path+<span class="string">'%s.jpg'</span>%x,<span class="string">'wb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">                f.write(file)</span><br><span class="line">                f.close()</span><br><span class="line">                flag = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        flag = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> flag:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> flag,url</span><br><span class="line"></span><br><span class="line">headers = &#123;<span class="string">'user-agent'</span>: <span class="string">'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'</span>&#125;</span><br><span class="line">url = <span class="string">'https://www.pexels.com/'</span></span><br><span class="line"></span><br><span class="line">res = request.Request(url,headers = headers)</span><br><span class="line">res = request.urlopen(res)</span><br><span class="line"></span><br><span class="line">soup = BeautifulSoup(res,<span class="string">'lxml'</span>)</span><br><span class="line">links = soup.find_all(<span class="string">'img'</span>,<span class="string">'photo-item__img'</span>)</span><br><span class="line">x = <span class="number">1</span></span><br><span class="line"><span class="keyword">for</span> link <span class="keyword">in</span> links:</span><br><span class="line">    url = cut_url(link)</span><br><span class="line">    flag = save_img(url,x)</span><br><span class="line">    x += <span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> flag:</span><br><span class="line">        print(flag)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(<span class="string">'bad'</span>+flag)</span><br></pre></td></tr></table></figure>
+
+<h2 id="多线程"><a href="#多线程" class="headerlink" title="多线程"></a>多线程</h2><p>多线程爬虫，分别用threadpool()和ThreadPoolExexutor()模块实现。</p>
+<h3 id="threadpool模块"><a href="#threadpool模块" class="headerlink" title="threadpool模块"></a>threadpool模块</h3><p>核心代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pool = threadpool.ThreadPool(x)<span class="comment">#声明一个线程池，x表示需要线程数</span></span><br><span class="line">   requests = threadpool.makeRequests(function_name,参数)</span><br><span class="line">   <span class="keyword">for</span> req <span class="keyword">in</span> requests:</span><br><span class="line">       pool.putRequest(req)</span><br><span class="line">   pool.wait()<span class="comment">#等待所有子线程都执行完毕后再执行主线程下面的语句，否则会直接运行主线程</span></span><br></pre></td></tr></table></figure>
+
+<p>这是声明一个线程池来将所有的线程再利用for循环一起启动，但是有一个坏处就是当线程多的时候就特别容易发生堵塞，适用于线程较少的时候</p>
+<p>threadpool模块的爬虫代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> threading</span><br><span class="line"><span class="keyword">import</span> threadpool</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">from</span> urllib <span class="keyword">import</span> request</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">thread_run</span><span class="params">(thread)</span>:</span></span><br><span class="line">    thread.start()</span><br><span class="line"></span><br><span class="line">    thread.join()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">save_img</span><span class="params">(url,name)</span>:</span></span><br><span class="line">    print(<span class="string">'tread %s is start '</span>%threading.current_thread().name)</span><br><span class="line"></span><br><span class="line">    flag = <span class="number">0</span></span><br><span class="line">    headers = &#123;<span class="string">'user-agent'</span>: <span class="string">'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'</span>&#125;</span><br><span class="line">    url = request.Request(url,headers = headers)</span><br><span class="line">    html = request.urlopen(url)</span><br><span class="line">    file = html.read()</span><br><span class="line">    path = <span class="string">'./wallroom2'</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> os.path.exists(path):</span><br><span class="line">        path = path + <span class="string">'/'</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">with</span> open(path+name,<span class="string">'ab+'</span>) <span class="keyword">as</span> f:</span><br><span class="line">            f.write(file)</span><br><span class="line">            f.close()</span><br><span class="line">            flag = <span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        os.mkdir(path)</span><br><span class="line">        path = path + <span class="string">'/'</span></span><br><span class="line">        <span class="keyword">with</span> open(path+url,<span class="string">'ab+'</span>) <span class="keyword">as</span> f:</span><br><span class="line">            f.write(file)</span><br><span class="line">            f.close()</span><br><span class="line">            flag = <span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> flag == <span class="number">1</span>:</span><br><span class="line">        print(<span class="string">'the %s is ok'</span>%name)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(<span class="string">'the %s is fail'</span>%url)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_url</span><span class="params">(url)</span>:</span></span><br><span class="line">     headers = &#123;<span class="string">'user-agent'</span>: <span class="string">'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'</span>&#125;</span><br><span class="line">     res = request.Request(url,headers = headers)</span><br><span class="line">     html = request.urlopen(res).read()</span><br><span class="line"></span><br><span class="line">     soup = BeautifulSoup(html,<span class="string">'lxml'</span>)</span><br><span class="line"></span><br><span class="line">     links = soup.find_all(<span class="string">'a'</span>)</span><br><span class="line">     <span class="keyword">return</span> links</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">set_name</span><span class="params">(url)</span>:</span></span><br><span class="line"></span><br><span class="line">    pos = url.index(<span class="string">'bg-'</span>)</span><br><span class="line"></span><br><span class="line">    name = url[pos:pos+<span class="number">10</span>] + <span class="string">'.jpeg'</span></span><br><span class="line">    print(name)</span><br><span class="line">    <span class="keyword">return</span> name</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    url = input(<span class="string">'请输入wallroom的一个网址：'</span>)</span><br><span class="line"></span><br><span class="line">    tread_list = []</span><br><span class="line"></span><br><span class="line">    links = get_url(url)</span><br><span class="line">    x = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> link <span class="keyword">in</span> links:</span><br><span class="line">        url1 = link.get(<span class="string">'href'</span>)</span><br><span class="line">        print(url1)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> url1.find(<span class="string">'bg'</span>) &gt; <span class="number">0</span>:</span><br><span class="line">            x += <span class="number">1</span></span><br><span class="line">            url_real = <span class="string">'https://wallroom.io'</span> + url1 +<span class="string">'/download'</span></span><br><span class="line">            print(url_real)</span><br><span class="line"></span><br><span class="line">            name = set_name(url1)</span><br><span class="line">            thread_name = name</span><br><span class="line">            thread_name = threading.Thread(target=save_img,args = (url_real,name,))</span><br><span class="line">            names.append(name)</span><br><span class="line">            urls.append(url_real)</span><br><span class="line"></span><br><span class="line">            tread_list.append(thread_name)</span><br><span class="line">    <span class="comment">#for tread_list in range(10):</span></span><br><span class="line"></span><br><span class="line">    pool = threadpool.ThreadPool(x)</span><br><span class="line">    requests = threadpool.makeRequests(thread_run, tread_list)</span><br><span class="line">    <span class="keyword">for</span> req <span class="keyword">in</span> requests:</span><br><span class="line">        pool.putRequest(req)</span><br><span class="line">    pool.wait()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    print(<span class="string">'ok'</span>)</span><br><span class="line"></span><br><span class="line">main()</span><br></pre></td></tr></table></figure>
+
+<h3 id="ThreadPoolExecutor模块"><a href="#ThreadPoolExecutor模块" class="headerlink" title="ThreadPoolExecutor模块"></a>ThreadPoolExecutor模块</h3><p><code>ThreadPoolExecutor</code>就提供了一个功能，可以规定在进程池里可以有多少线程在运行，在线程比较多的时候减少了资源的占用</p>
+<p>核心代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">executor = ThreadPoolExecutor(x)<span class="comment">#线程池中能够进行的线程只能有x个</span></span><br><span class="line">    all_task = [executor.submit(save_img, (url)) <span class="keyword">for</span> url <span class="keyword">in</span> urls]</span><br><span class="line">    wait(all_task, return_when=ALL_COMPLETED)<span class="comment">#相当于threadpool中的wait()</span></span><br></pre></td></tr></table></figure>
+
+<p>利用ThreadPoolExecutor爬虫的完整代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> threadpool</span><br><span class="line"><span class="keyword">import</span> threading</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">from</span> urllib <span class="keyword">import</span> request</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ThreadPoolExecutor , wait, ALL_COMPLETED, FIRST_COMPLETED</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">save_img</span><span class="params">(url)</span>:</span></span><br><span class="line">    print(<span class="string">'tread %s is start '</span>%threading.current_thread().name)</span><br><span class="line">    name = set_name(url)</span><br><span class="line">    flag = <span class="number">0</span></span><br><span class="line">    headers = &#123;<span class="string">'user-agent'</span>: <span class="string">'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'</span>&#125;</span><br><span class="line">    url = request.Request(url,headers = headers)</span><br><span class="line">    html = request.urlopen(url)</span><br><span class="line">    file = html.read()</span><br><span class="line">    path = <span class="string">'./wallroom2880'</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> os.path.exists(path):</span><br><span class="line">        path = path + <span class="string">'/'</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">with</span> open(path+name,<span class="string">'ab+'</span>) <span class="keyword">as</span> f:</span><br><span class="line">            f.write(file)</span><br><span class="line">            f.close()</span><br><span class="line">            flag = <span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        os.mkdir(path)</span><br><span class="line">        path = path + <span class="string">'/'</span></span><br><span class="line">        <span class="keyword">with</span> open(path+url,<span class="string">'ab+'</span>) <span class="keyword">as</span> f:</span><br><span class="line">            f.write(file)</span><br><span class="line">            f.close()</span><br><span class="line">            flag = <span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> flag:</span><br><span class="line">        print(<span class="string">'the %s is ok'</span>%name)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(<span class="string">'the %s is fail'</span>%url)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_url</span><span class="params">(url)</span>:</span></span><br><span class="line">     headers = &#123;<span class="string">'user-agent'</span>: <span class="string">'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'</span>&#125;</span><br><span class="line">     res = request.Request(url,headers = headers)</span><br><span class="line">     html = request.urlopen(res).read()</span><br><span class="line"></span><br><span class="line">     soup = BeautifulSoup(html,<span class="string">'lxml'</span>)</span><br><span class="line"></span><br><span class="line">     links = soup.find_all(<span class="string">'a'</span>)</span><br><span class="line">     <span class="keyword">return</span> links</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">set_name</span><span class="params">(url)</span>:</span></span><br><span class="line"></span><br><span class="line">    pos = url.index(<span class="string">'bg-'</span>)</span><br><span class="line"></span><br><span class="line">    name = url[pos:pos+<span class="number">10</span>] + <span class="string">'.jpeg'</span></span><br><span class="line">    <span class="keyword">return</span> name</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    url = input(<span class="string">'请输入wallroom的一个网址：'</span>)</span><br><span class="line"></span><br><span class="line">    urls = []</span><br><span class="line"></span><br><span class="line">    links = get_url(url)</span><br><span class="line">    <span class="comment">#print(links)</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> link <span class="keyword">in</span> links:</span><br><span class="line">        url1 = link.get(<span class="string">'href'</span>)</span><br><span class="line">        <span class="comment">#print(url1)</span></span><br><span class="line">        <span class="keyword">if</span> url1.find(<span class="string">'bg'</span>) &gt; <span class="number">0</span>:</span><br><span class="line">            url_real = <span class="string">'https://wallroom.io'</span> + url1 +<span class="string">'/download'</span></span><br><span class="line">            print(url_real)</span><br><span class="line">            urls.append(url_real)</span><br><span class="line"></span><br><span class="line">    executor = ThreadPoolExecutor(<span class="number">10</span>)</span><br><span class="line">    all_task = [executor.submit(save_img, (url)) <span class="keyword">for</span> url <span class="keyword">in</span> urls]</span><br><span class="line">    wait(all_task, return_when=ALL_COMPLETED)</span><br><span class="line"></span><br><span class="line">    print(<span class="string">'ok'</span>)</span><br><span class="line"></span><br><span class="line">main()</span><br></pre></td></tr></table></figure>
+
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/python/"># python</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/06/24/SSRF%E5%AD%A6%E4%B9%A0/">SSRF学习</a>
+            
+            
+            <a class="next" rel="next" href="/2020/06/20/docker%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">docker学习笔记</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© FXXY | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
