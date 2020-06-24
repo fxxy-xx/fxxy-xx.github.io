@@ -14,7 +14,7 @@
 
 
 
-<title>SSRF学习 | fxxy&#39;s blog</title>
+<title>SSRF-服务端请求伪造 | fxxy&#39;s blog</title>
 
 
 
@@ -175,14 +175,14 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">SSRF学习</h1>
+            <h1 class="post-title">SSRF-服务端请求伪造</h1>
             
                 <div class="post-meta">
                     
 
                     
                         <span class="post-time">
-                        Date: <a href="#">2020-06-24&nbsp;&nbsp;17:06:47</a>
+                        Date: <a href="#">2020-06-24&nbsp;&nbsp;20:37:44</a>
                         </span>
                     
                     
@@ -241,7 +241,7 @@
 <p>用burp抓取一个流量包后，将内容进行url编码</p>
 <p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/2JH4B1VVK%7D4YLAZMLLV7APW.png" alt="img"></p>
 <p>然后打开终端，输入命令</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl gooher:&#x2F;&#x2F;127.0.0.1:80&#x2F;_</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl gooher:&#x2F;&#x2F;127.0.0.1:80&#x2F;_数据包编码后的内容</span><br></pre></td></tr></table></figure>
 
 <p>然后页面进行相应输出，如果要传POST包，则将包进行相应编码则可</p>
 <p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/1234.png" alt="1234"></p>
@@ -370,35 +370,70 @@
 </ul>
 <p>域名解析：</p>
 <ul>
-<li>将一个域名地址与一个IP地址相对应</li>
+<li>将一个域名解析到一个IP地址，让人们可以通过访问这个域名来访问到这个IP。<ul>
+<li>A记录：将域名指向一个Ipv4地址</li>
+<li>AAAA记录：将域名指向一个iPv6地址</li>
+<li>C记录：将一个域名1指向域名2，则域名1也可以通过域名2来进行访问</li>
+<li>MIX：将域名指向一个邮箱服务器</li>
+<li>…..</li>
+</ul>
+</li>
 </ul>
 <p>TTL</p>
 <ul>
-<li></li>
+<li>生存时间。表示DNS记录在DNS服务器上缓存时间。也就是说当一个DNS服务器成功解析一个域名后，这个解析记录在此台DNS服务器上保存的时间，超过这个时间，该记录就会被销毁，再次请求时，会重新进行查找解析。</li>
 </ul>
 <p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200624163507221.png" alt="image-20200624163507221"></p>
-<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/getImage" alt="title"></p>
+<p>DNS重绑定主要利用的是可以设置域名解析的缓存时长TTL，下图是一个网站请求URL的步骤</p>
+<p><img src="../getImage.png" alt="title"></p>
+<p>我们的利用点主要在红色框框圈出来的这部分时间内</p>
+<p>v<img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200624202211965.png" alt="image-20200624202211965"></p>
+<p>由上面的知识我们可以知道，一个域名的解析记录缓存时间可以设置，由图我们可以知道，服务器的相关执行顺序：</p>
+<ol>
+<li>先从DNS服务器解析，获得URL的IP地址</li>
+<li>将获取的IP地址与预先设定的规则进行匹配，判断是否符合请求条件</li>
+<li>如果符合条件则进行请求</li>
+</ol>
+<p>我们可以在第一步和第三步做文章，思路如下</p>
+<p><strong>在服务器第一次请求DNS服务器获取IP时，也就是要获得url的IP进行判断之前，我们将域名的IP解析到一个合理的公网IP1上，然后将TTL设置成0；</strong></p>
+<p>服务器进行判断后，认为这个IP符合正常条件，则进入下一步请求内容，我们利用的就是服务器判断的这个间隙，<strong>在这个间隙之间，如果我们将网址解析到127.0.0.1</strong>的话，那么服务器后续再进行请求时，<strong>如果没有使用第一步请求的IP</strong>，而是直接用域名去请求内容的话，那就可能请求到内网的一些信息。</p>
+<p>但是这个要求比较高，不同的DNS服务器有相应的TTL限制，比如阿里云默认10min，国外0。</p>
+<p><a href="https://xz.aliyun.com/t/7495" target="_blank" rel="noopener">https://xz.aliyun.com/t/7495</a> </p>
+<p>这里留个坑后面补，学写DNS解析服务器</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h3 id="漏洞成因"><a href="#漏洞成因" class="headerlink" title="漏洞成因"></a>漏洞成因</h3><h3 id="绕过方式"><a href="#绕过方式" class="headerlink" title="绕过方式"></a>绕过方式</h3><ul>
-<li>302绕过</li>
-<li>IP编码绕过<ul>
-<li>hex编码</li>
+<li><p>302绕过</p>
+<ul>
+<li>构造302跳转php</li>
 </ul>
 </li>
-<li>xip.io绕过</li>
-<li>协议绕过<ul>
+<li><p>IP编码绕过</p>
+<ul>
+<li>hex编码</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1</span><br><span class="line"># 十六进制</span><br><span class="line">0x7f.0x0.0x0.0x1</span><br><span class="line"></span><br><span class="line"># 八进制</span><br><span class="line">0177.0.0.01</span><br><span class="line"></span><br><span class="line">#混合编码</span><br><span class="line">0177.0.0.0x1</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200624203022881.png" alt="image-20200624203022881"></p>
+</li>
+<li><p>xip.io绕过：<a href="http://xip.io/" target="_blank" rel="noopener">http://xip.io/</a></p>
+</li>
+<li><p>协议绕过</p>
+<ul>
 <li>gopher</li>
 <li>file</li>
 <li>dict等</li>
 </ul>
 </li>
-<li></li>
+<li><p>DNS重绑定</p>
+<ul>
+<li>要求服务器对资源的请求直接使用curl(用户输入的网址)，而不是沿用进行判断时使用的IP</li>
+</ul>
+</li>
 </ul>
 <h3 id="防御"><a href="#防御" class="headerlink" title="防御"></a>防御</h3><ul>
 <li>针对存在url操作的点进行相关过滤、判断</li>
 <li>url白名单</li>
 <li>禁止30x跳转</li>
 </ul>
-<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/456.png" alt=""></p>
 <h2 id="refer"><a href="#refer" class="headerlink" title="refer"></a>refer</h2><p><a href="https://joychou.org/web/phpssrf.html" target="_blank" rel="noopener">https://joychou.org/web/phpssrf.html</a></p>
 <p><a href="https://k-ring.github.io/2019/05/31/对万金油gopher协议的理解与应用/" target="_blank" rel="noopener">https://k-ring.github.io/2019/05/31/%E5%AF%B9%E4%B8%87%E9%87%91%E6%B2%B9gopher%E5%8D%8F%E8%AE%AE%E7%9A%84%E7%90%86%E8%A7%A3%E4%B8%8E%E5%BA%94%E7%94%A8/</a></p>
 <p><a href="https://www.smi1e.top/gopher-ssrf攻击内网应用复现/" target="_blank" rel="noopener">https://www.smi1e.top/gopher-ssrf%E6%94%BB%E5%87%BB%E5%86%85%E7%BD%91%E5%BA%94%E7%94%A8%E5%A4%8D%E7%8E%B0/</a></p>
@@ -426,6 +461,8 @@
             </div>
         </section>
         <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/06/24/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">PHP反序列化</a>
             
             
             <a class="next" rel="next" href="/2020/06/23/python%E7%88%AC%E8%99%AB-%E5%8D%95&%E5%A4%9A%E7%BA%BF%E7%A8%8B/">python爬虫-单&多线程</a>
