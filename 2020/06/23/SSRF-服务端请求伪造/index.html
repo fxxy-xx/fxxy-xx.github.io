@@ -182,7 +182,7 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">2025-12-12&nbsp;&nbsp;00:00:00</a>
+                        Date: <a href="#">2020-06-23&nbsp;&nbsp;00:00:00</a>
                         </span>
                     
                     
@@ -191,8 +191,7 @@
         </header>
 
         <div class="post-content">
-            <p>SSRF学习</p>
-<ul>
+            <ul>
 <li>SSRF：服务端请求伪造漏洞</li>
 <li>原理：由攻击者构造的攻击链接传给服务端执行造成的漏洞，一般用在外网探测或攻击内网服务。漏洞大多数发生在连接外网与内网的跳板机中</li>
 <li>成因：服务器未对发起请求的URL进行有效检测和过滤。</li>
@@ -385,7 +384,8 @@
 </ul>
 <p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200624163507221.png" alt="image-20200624163507221"></p>
 <p>DNS重绑定主要利用的是可以设置域名解析的缓存时长TTL，下图是一个网站请求URL的步骤</p>
-<p><img src="../getImage.png" alt="title"></p>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200625093327592.png" alt="image-20200625093327592"></p>
+<p>​                                                                                                                <strong>(图源网络)</strong></p>
 <p>我们的利用点主要在红色框框圈出来的这部分时间内</p>
 <p>v<img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200624202211965.png" alt="image-20200624202211965"></p>
 <p>由上面的知识我们可以知道，一个域名的解析记录缓存时间可以设置，由图我们可以知道，服务器的相关执行顺序：</p>
@@ -400,7 +400,10 @@
 <p>但是这个要求比较高，不同的DNS服务器有相应的TTL限制，比如阿里云默认10min，国外0。</p>
 <p><a href="https://xz.aliyun.com/t/7495" target="_blank" rel="noopener">https://xz.aliyun.com/t/7495</a> </p>
 <p>这里留个坑后面补，学写DNS解析服务器</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h3 id="漏洞成因"><a href="#漏洞成因" class="headerlink" title="漏洞成因"></a>漏洞成因</h3><h3 id="绕过方式"><a href="#绕过方式" class="headerlink" title="绕过方式"></a>绕过方式</h3><ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h3 id="漏洞成因"><a href="#漏洞成因" class="headerlink" title="漏洞成因"></a>漏洞成因</h3><ul>
+<li>服务器端提供了向其他服务器请求资源获取数据的权限但未对请求的目标地址做有效的过滤。</li>
+</ul>
+<h3 id="绕过方式"><a href="#绕过方式" class="headerlink" title="绕过方式"></a>绕过方式</h3><ul>
 <li><p>302绕过</p>
 <ul>
 <li>构造302跳转php</li>
@@ -466,10 +469,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2025/12/12/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">PHP反序列化</a>
+                <a class="prev" rel="prev" href="/2020/06/23/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">PHP反序列化</a>
             
             
-            <a class="next" rel="next" href="/2020/06/23/python%E7%88%AC%E8%99%AB-%E5%8D%95&%E5%A4%9A%E7%BA%BF%E7%A8%8B/">python爬虫-单&多线程</a>
+            <a class="next" rel="next" href="/2020/06/20/Windows%E4%B8%8Bvscode%E9%85%8D%E7%BD%AEPHP%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83/">Windows下vscode配置PHP动态调试环境</a>
             
         </section>
 
