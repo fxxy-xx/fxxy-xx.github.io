@@ -312,14 +312,14 @@
 <li><p>不停的增加../.././</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?file&#x3D;..&#x2F;..&#x2F;...&#x2F;..&#x2F;...&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;。。。。。。。&#x2F;shell.txt</span><br></pre></td></tr></table></figure>
 
-<p>在linux中达到一定长度时，会丢弃后面多余的部分</p>
+<p>在linux中达到4096字节，Windows中256字节时，会自动丢弃后面多余的部分</p>
 </li>
 </ul>
 </li>
 </ul>
 <h2 id="防御"><a href="#防御" class="headerlink" title="防御"></a>防御</h2><ul>
 <li>过滤敏感字符</li>
-<li>设置open_basedir，指定可以包含的路径</li>
+<li>设置open_basedir，指定可以进行包含的目录路径</li>
 </ul>
 <p><a href="https://www.cnblogs.com/iamstudy/articles/include_file.html" target="_blank" rel="noopener">https://www.cnblogs.com/iamstudy/articles/include_file.html</a></p>
 <p><a href="https://chybeta.github.io/2017/10/08/php文件包含漏洞/" target="_blank" rel="noopener">https://chybeta.github.io/2017/10/08/php文件包含漏洞/</a></p>
