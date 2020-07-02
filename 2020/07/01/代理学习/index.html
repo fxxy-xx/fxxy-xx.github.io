@@ -14,7 +14,7 @@
 
 
 
-<title>文件上传 | fxxy&#39;s blog</title>
+<title>代理学习 | fxxy&#39;s blog</title>
 
 
 
@@ -109,80 +109,20 @@
             <div class="container">
     
     
-        <div class="post-toc">
-    <div class="tocbot-list">
-    </div>
-    <div class="tocbot-list-menu">
-        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
-        <a onclick="go_top()">Back to top</a>
-        <a onclick="go_bottom()">Go to bottom</a>
-    </div>
-</div>
-
-<script>
-    document.ready(
-        function () {
-            tocbot.init({
-                tocSelector: '.tocbot-list',
-                contentSelector: '.post-content',
-                headingSelector: 'h1, h2, h3, h4, h5',
-                collapseDepth: 1,
-                orderedList: false,
-                scrollSmooth: true,
-            })
-        }
-    )
-
-    function expand_toc() {
-        var b = document.querySelector(".tocbot-toc-expand");
-        tocbot.init({
-            tocSelector: '.tocbot-list',
-            contentSelector: '.post-content',
-            headingSelector: 'h1, h2, h3, h4, h5',
-            collapseDepth: 6,
-            orderedList: false,
-            scrollSmooth: true,
-        });
-        b.setAttribute("onclick", "collapse_toc()");
-        b.innerHTML = "Collapse all"
-    }
-
-    function collapse_toc() {
-        var b = document.querySelector(".tocbot-toc-expand");
-        tocbot.init({
-            tocSelector: '.tocbot-list',
-            contentSelector: '.post-content',
-            headingSelector: 'h1, h2, h3, h4, h5',
-            collapseDepth: 1,
-            orderedList: false,
-            scrollSmooth: true,
-        });
-        b.setAttribute("onclick", "expand_toc()");
-        b.innerHTML = "Expand all"
-    }
-
-    function go_top() {
-        window.scrollTo(0, 0);
-    }
-
-    function go_bottom() {
-        window.scrollTo(0, document.body.scrollHeight);
-    }
-
-</script>
-    
 
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">文件上传</h1>
+            <h1 class="post-title">代理学习</h1>
             
                 <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">FXXY</a>
                     
 
                     
                         <span class="post-time">
-                        Date: <a href="#">2025-12-12&nbsp;&nbsp;00:00:00</a>
+                        Date: <a href="#">2020-07-1&nbsp;&nbsp;21:06:47</a>
                         </span>
                     
                     
@@ -191,20 +131,9 @@
         </header>
 
         <div class="post-content">
-            <h2 id="绕过"><a href="#绕过" class="headerlink" title="绕过"></a>绕过</h2><ul>
-<li>00截断<ul>
-<li>get：%00</li>
-<li>POST：hex里截断</li>
-</ul>
-</li>
-<li>解析漏洞<ul>
-<li>apache1.0x-2.0x：php3，php4，php.xxxx.xxx</li>
-<li>IIS：</li>
-</ul>
-</li>
-<li>.htaccess利用</li>
-<li>图片马</li>
-</ul>
+            <p>占坑</p>
+<p><a href="https://mp.weixin.qq.com/s/heSvLuJtdPyJfsKJVlZEhw" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/heSvLuJtdPyJfsKJVlZEhw</a></p>
+<p><a href="https://docs.ioin.in/writeup/www.4hou.com/_technology_13970_html/index.html" target="_blank" rel="noopener">https://docs.ioin.in/writeup/www.4hou.com/_technology_13970_html/index.html</a></p>
 
         </div>
 
@@ -224,10 +153,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2025/12/12/SQL%E6%B3%A8%E5%85%A5%E6%80%BB%E7%BB%93/">SQL注入总结</a>
+                <a class="prev" rel="prev" href="/2025/12/12/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E7%BB%BC%E5%90%88%E5%AE%9E%E6%88%98/">渗透测试综合实战</a>
             
             
-            <a class="next" rel="next" href="/2025/12/12/Windows%E4%B8%8B%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E7%94%A8$DATA%E7%BB%95%E8%BF%87%E7%9A%84%E7%90%86%E8%A7%A3/">Windows下文件上传用$DATA绕过的理解</a>
+            <a class="next" rel="next" href="/2020/07/01/vue%20%E5%9F%BA%E7%A1%80%E6%8C%87%E4%BB%A4%E5%AD%A6%E4%B9%A0/">vue 基础指令学习</a>
             
         </section>
 
