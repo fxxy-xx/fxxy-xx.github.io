@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="FXXY">
+
+
+    <meta name="subtitle" content="fxxy's blog">
+
+
+
+
+<title>vue笔记 | fxxy&#39;s blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">fxxy&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                    <a class="menu-item" href="/links">Links</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">fxxy&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                    <a class="menu-item" href="/links">Links</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">vue笔记</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">FXXY</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2020-07-3&nbsp;&nbsp;09:58:35</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>ES6属性</p>
+<ul>
+<li>速写属性</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var name &#x3D; &#39;abc&#39;;</span><br><span class="line">var age &#x3D; 123;</span><br><span class="line"></span><br><span class="line">var obg&#x3D;&#123;</span><br><span class="line">	name;  &#x2F;&#x2F;以前写法为name &#x3D; name;</span><br><span class="line">	age;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>箭头函数</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">var obj &#x3D; &#123;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br><span class="line">var func &#x3D; (a,b) &#x3D;&gt; a + b;</span><br><span class="line">var func1 &#x3D; a &#x3D;&gt; a + 2;</span><br><span class="line"></span><br><span class="line">func(4,5);  &#x2F;&#x2F;9</span><br><span class="line">func1(2); &#x2F;&#x2F;4</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><p>通过new Vue({….})创建实例</p>
+<p>配置对象中的内容会提取到实例中：</p>
+<ul>
+<li>data：数据</li>
+<li>props</li>
+<li>template：字符串，配置模板</li>
+<li>methods：配置方法</li>
+<li>computed：配置计算属性</li>
+</ul>
+<p>计算属性和方法的区别：计算属性使用时，时当作属性使用</p>
+<p>计算属性会进行缓存，如果依赖不变，则会直接使用缓存结果，不会多次进行计算</p>
+<h2 id="挂载"><a href="#挂载" class="headerlink" title="挂载"></a>挂载</h2><p>让vue实例控制页面中某个区域的过程，称之为挂载</p>
+<p>方式：</p>
+<ol>
+<li>通过el:”css选择器”进行配置，el:”#app”</li>
+<li>通过vue实例，app.$mount(‘css选择器’)进行配置</li>
+</ol>
+<h2 id="模板"><a href="#模板" class="headerlink" title="模板"></a>模板</h2><p>被VUE控制的页面片段</p>
+<ol>
+<li><p>作用：</p>
+<ol>
+<li>提高渲染效率，vue会把模板渲染成虚拟DOM 树，然后再生成真实DOM 树</li>
+</ol>
+</li>
+<li><p>书写在哪：</p>
+<ol>
+<li>在挂载元素中直接书写</li>
+<li>在template中书写</li>
+<li>在render配置中用函数创建</li>
+</ol>
+</li>
+<li><p>模板中写什么</p>
+<ol>
+<li><p>静态内容</p>
+</li>
+<li><p>插值：</p>
+</li>
+<li><p>指令</p>
+<ol>
+<li><p>v-bind：绑定属性。innerHTML</p>
+</li>
+<li><p>v-on：绑定事件。简写：@</p>
+</li>
+<li><p>v-if：判断元素是否需要渲染</p>
+</li>
+<li><p>v-show：判断元素是否应该显示</p>
+<ul>
+<li><blockquote>
+<p>v-if 是动态添加，当值为 false 时，是完全移除该元素，即 dom 树中不存在该元素。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<pre><code>     &gt; v-show 仅是隐藏 / 显示，值为 false 时，该元素依旧存在于 dom 树中。若其原有样式设置了 display: none 则会导致其无法正常显示。
+
+5. v-for：循环遍历
+
+6. v-bind:key：用于帮助在重新渲染时元素的比对，通常和v-for配合使用，提高渲染效率
+
+7. v-model：实现双写绑定，自动绑定value属性值，并注册input事件</code></pre><p>组件</p>
+<p>ES模块化</p>
+<p>导出</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//默认导出</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span>(<span class="params">a,b</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">return</span> a+b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//具名导出 &#123; double:fn&#125;</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">double</span>(<span class="params">a</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">return</span> a*<span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//&#123;n : 3&#125;</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">var</span> n = <span class="number">3</span>;</span><br></pre></td></tr></table></figure>
+
+<p>导入</p>
+<p>须先在文件中导出才能导入</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> xxx <span class="keyword">from</span> <span class="string">'js文件路径'</span> <span class="comment">//导入路径文件中的default</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123;double&#125;  <span class="keyword">from</span> <span class="string">'js文件路径'</span>  <span class="comment">//具名导入</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> obj = <span class="keyword">from</span> <span class="string">'js文件路径'</span>  <span class="comment">//导入全部</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>组件概念</p>
+<p>组件化，即把每一个页面中区域功能细分，每一个区域成为一个组件，每个组件包含：</p>
+<ul>
+<li>功能（JS代码）</li>
+<li>内容（模板代码）</li>
+<li>样式（CSS代码）</li>
+</ul>
+<p>创建组件</p>
+<p>组件是根据一个普通的配置对象创建的所以要开发一个组件，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">var myApp &#x3D; &#123;</span><br><span class="line">	data()&#123;</span><br><span class="line">	return&#123;</span><br><span class="line">		......</span><br><span class="line">	&#125;;</span><br><span class="line">	&#125;,</span><br><span class="line">	method:&#123;</span><br><span class="line">	</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;.$mount(&#39;#app&#39;)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>注意，组件中无el元素，用$mount进行挂载</p>
+</li>
+<li><p>data属性是函数模式</p>
+</li>
+</ul>
+<p>注册和使用组件</p>
+<p>全局注册</p>
+<p>在main.js中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Vue.component(“使用名”,导入名称)</span><br></pre></td></tr></table></figure>
+
+<p>局部注册和使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;使用</span><br><span class="line">&lt;componentName&#x2F;&gt;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;在view文件夹中</span><br><span class="line">import  componentName from app.view</span><br><span class="line"></span><br><span class="line">new Vue(&#123;</span><br><span class="line">	components:&#123;</span><br><span class="line">		componentName;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>组件命名规范<ul>
+<li>大驼峰命名法（可用短横线方式调用）：<userInfo> = <user-info></li>
+<li>短横线命名法</li>
+</ul>
+</li>
+</ul>
+<p>组件树</p>
+<p>组件之间传递数据</p>
+<p>props数组：声明可以接受的数据</p>
+<p>传递数据的组件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;user-info v-for&#x3D;&quot;(item,i) in users&quot; :key&#x3D;&quot;i&quot; :name&#x3D;&#39;item.name&#39; &gt;</span><br><span class="line"></span><br><span class="line">new Vue(&#123;</span><br><span class="line">	data:&#123;</span><br><span class="line">	users:[</span><br><span class="line">		&#123;name:123&#125;,</span><br><span class="line">		&#123;name:456&#125;</span><br><span class="line">	],</span><br><span class="line">	&#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>接收数据的组件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">	&lt;p&gt;&#123;name&#125;&lt;&#x2F;name&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line"></span><br><span class="line">new Vue(&#123;</span><br><span class="line">	props:[&#39;name&#39;]	</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>vue-cli</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 安装</span><br><span class="line">npm i -g @vue-cli</span><br><span class="line"></span><br><span class="line"># 创建项目</span><br><span class="line">vue create my-project</span><br></pre></td></tr></table></figure>
+
+<p>工程结构</p>
+<ul>
+<li>node_modules：项目依赖的第三方库</li>
+<li>public</li>
+<li>src：自己写的代码<ul>
+<li>main.js：入口文件</li>
+<li>assets：存放静态文件，img等</li>
+</ul>
+</li>
+</ul>
+<p>运行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 打包生成</span><br><span class="line">npm run build</span><br><span class="line"># 运行</span><br><span class="line">npm run serve</span><br></pre></td></tr></table></figure>
+
+<p>element-ui</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 安装</span><br><span class="line">npm i element-ui -S</span><br></pre></td></tr></table></figure>
+
+<p>引入</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># 完整引入 main.js中</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> ElementUI <span class="keyword">from</span> <span class="string">'element-ui'</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">'element-ui/lib/theme-chalk/index.css'</span>;</span><br><span class="line"></span><br><span class="line">Vue.use(ElementUI);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 局部引入 main.js中</span><br><span class="line"><span class="keyword">import</span> &#123; Button, Select &#125; <span class="keyword">from</span> <span class="string">'element-ui'</span>;</span><br><span class="line"></span><br><span class="line">Vue.component(Button.name, Button);</span><br><span class="line">Vue.component(Select.name, Select);</span><br></pre></td></tr></table></figure>
+
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2025/12/12/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E7%BB%BC%E5%90%88%E5%AE%9E%E6%88%98/">渗透测试综合实战</a>
+            
+            
+            <a class="next" rel="next" href="/2020/07/01/%E4%BB%A3%E7%90%86%E5%AD%A6%E4%B9%A0/">代理学习</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© FXXY | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
