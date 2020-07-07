@@ -14,7 +14,7 @@
 
 
 
-<title>工具集合 | fxxy&#39;s blog</title>
+<title>vue实战笔记 | fxxy&#39;s blog</title>
 
 
 
@@ -175,7 +175,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">工具集合</h1>
+            <h1 class="post-title">vue实战笔记</h1>
             
                 <div class="post-meta">
                     
@@ -184,7 +184,7 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">2025-12-12&nbsp;&nbsp;00:00:00</a>
+                        Date: <a href="#">2020-07-4&nbsp;&nbsp;19:01:17</a>
                         </span>
                     
                     
@@ -193,46 +193,41 @@
         </header>
 
         <div class="post-content">
-            <h2 id="扫描类"><a href="#扫描类" class="headerlink" title="扫描类"></a>扫描类</h2><ul>
-<li>burp<ul>
-<li>官网：</li>
-<li>教程：</li>
-</ul>
-</li>
-</ul>
-<h2 id="信息收集类"><a href="#信息收集类" class="headerlink" title="信息收集类"></a>信息收集类</h2><p>内置在kali中</p>
+            <h2 id="登录界面"><a href="#登录界面" class="headerlink" title="登录界面"></a>登录界面</h2><p>流程</p>
+<ol>
+<li>登录页面输入用户名和密码</li>
+<li>调用后台接口进行验证</li>
+<li>通过验证后，根据后台响应状态跳转到项目主页</li>
+</ol>
+<p>相关技术点</p>
 <ul>
-<li><p>Maltego</p>
+<li>http是无状态的</li>
+<li>通过cookie的客户端记录状态</li>
+<li>通过session在服务器记录状态</li>
+<li>通过token方式维持状态</li>
+</ul>
+<p>element-ui</p>
+<p>表单验证：rules  prop对象</p>
+<p>获取实例对象：ref</p>
+<p>axios</p>
 <ul>
-<li><a href="https://www.paterva.com" target="_blank" rel="noopener">https://www.paterva.com</a></li>
-<li>教程：<a href="https://www.jianshu.com/p/93ab0265375b" target="_blank" rel="noopener">https://www.jianshu.com/p/93ab0265375b</a></li>
+<li>引入</li>
 </ul>
-</li>
-<li><p>Recon-Ng</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import axios from &#39;axios&#39;</span><br><span class="line"></span><br><span class="line">axios.defaults.baseURL &#x3D; &#39;http:&#x2F;&#x2F;127.0.0.1:8888&#x2F;api&#x2F;private&#x2F;v1&#x2F;&#39;</span><br><span class="line">Vue.prototype.$http &#x3D; axios</span><br></pre></td></tr></table></figure>
+
 <ul>
-<li><a href="https://bitbucket.org/LaNMaSteR53/recon-ng.git" target="_blank" rel="noopener">https://bitbucket.org/LaNMaSteR53/recon-ng.git</a></li>
-<li>教程：<a href="https://www.freebuf.com/sectool/141544.html" target="_blank" rel="noopener">https://www.freebuf.com/sectool/141544.html</a></li>
+<li>使用</li>
 </ul>
-</li>
-<li><p>theHarvester</p>
-<ul>
-<li><a href="https://github.com/laramies/theHarvester" target="_blank" rel="noopener">https://github.com/laramies/theHarvester</a></li>
-<li>教程：<a href="https://cloud.tencent.com/developer/news/47698" target="_blank" rel="noopener">https://cloud.tencent.com/developer/news/47698</a></li>
-</ul>
-</li>
-</ul>
-<h2 id="目录扫描"><a href="#目录扫描" class="headerlink" title="目录扫描"></a>目录扫描</h2><ul>
-<li>dirmap<ul>
-<li><a href="https://github.com/H4ckForJob/dirmap" target="_blank" rel="noopener">https://github.com/H4ckForJob/dirmap</a></li>
-</ul>
-</li>
-</ul>
-<p>搜索引擎</p>
-<ul>
-<li>fofa</li>
-<li>shodan</li>
-<li>钟馗之眼</li>
-</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">const &#123;data : res&#125; &#x3D; await this.$http.post(&#39;login&#39;,this.loginForm);</span><br><span class="line">            console.log(res.meta.status)</span><br><span class="line">            if(res.meta.status !&#x3D;&#x3D; 200) return console.log(&quot;登录失败&quot;);</span><br><span class="line">            </span><br><span class="line">            console.log(&quot;登录失败&quot;)</span><br></pre></td></tr></table></figure>
+
+<p>路由导航守卫</p>
+<p>判断是否有权限访问相关页面</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">router.beforeEach(<span class="function">(<span class="params">to,<span class="keyword">from</span>,next</span>) =&gt;</span>&#123;</span><br><span class="line">  <span class="comment">//to将要访问的路径</span></span><br><span class="line">  <span class="comment">//from代表从哪个页面访问的</span></span><br><span class="line">  <span class="comment">//next 是一个函数，表示放行，即送到to的地址</span></span><br><span class="line">  <span class="keyword">if</span> (to.path === <span class="string">"/login"</span>) <span class="keyword">return</span> next();</span><br><span class="line"></span><br><span class="line">  <span class="comment">//获取token</span></span><br><span class="line">  <span class="keyword">const</span> tokenStr = <span class="built_in">window</span>.sessionStorage.getItem(<span class="string">'token'</span>);</span><br><span class="line">  <span class="comment">//如果token为空，则送到登录界面</span></span><br><span class="line">  <span class="keyword">if</span>(!tokenStr) <span class="keyword">return</span> next(<span class="string">'/login'</span>);</span><br><span class="line">  <span class="comment">//若不为空，则送到to</span></span><br><span class="line">  next()</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p> this.$router.push(‘/login’)</p>
+<p>axios拦截请求添加字段</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">axios.interceptors.request.use(config &#x3D;&gt;&#123;</span><br><span class="line">  </span><br><span class="line">  config.headers.Authorization &#x3D; window.sessionStorage.getItem(&#39;token&#39;);</span><br><span class="line">  &#x2F;&#x2F;console.log(config);</span><br><span class="line">  return config;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
 
         </div>
 
@@ -252,10 +247,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2025/12/12/Google-XSS-game/">Google-XSS-game</a>
+                <a class="prev" rel="prev" href="/2020/07/04/git%E5%B0%8F%E7%82%92/">git小炒</a>
             
             
-            <a class="next" rel="next" href="/2025/12/12/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">渗透测试学习笔记</a>
+            <a class="next" rel="next" href="/2020/07/04/SRC%E6%8C%96%E6%B4%9E/">SRC挖洞</a>
             
         </section>
 

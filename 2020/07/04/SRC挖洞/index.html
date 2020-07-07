@@ -14,7 +14,7 @@
 
 
 
-<title>工具集合 | fxxy&#39;s blog</title>
+<title>SRC挖洞 | fxxy&#39;s blog</title>
 
 
 
@@ -109,73 +109,11 @@
             <div class="container">
     
     
-        <div class="post-toc">
-    <div class="tocbot-list">
-    </div>
-    <div class="tocbot-list-menu">
-        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
-        <a onclick="go_top()">Back to top</a>
-        <a onclick="go_bottom()">Go to bottom</a>
-    </div>
-</div>
-
-<script>
-    document.ready(
-        function () {
-            tocbot.init({
-                tocSelector: '.tocbot-list',
-                contentSelector: '.post-content',
-                headingSelector: 'h1, h2, h3, h4, h5',
-                collapseDepth: 1,
-                orderedList: false,
-                scrollSmooth: true,
-            })
-        }
-    )
-
-    function expand_toc() {
-        var b = document.querySelector(".tocbot-toc-expand");
-        tocbot.init({
-            tocSelector: '.tocbot-list',
-            contentSelector: '.post-content',
-            headingSelector: 'h1, h2, h3, h4, h5',
-            collapseDepth: 6,
-            orderedList: false,
-            scrollSmooth: true,
-        });
-        b.setAttribute("onclick", "collapse_toc()");
-        b.innerHTML = "Collapse all"
-    }
-
-    function collapse_toc() {
-        var b = document.querySelector(".tocbot-toc-expand");
-        tocbot.init({
-            tocSelector: '.tocbot-list',
-            contentSelector: '.post-content',
-            headingSelector: 'h1, h2, h3, h4, h5',
-            collapseDepth: 1,
-            orderedList: false,
-            scrollSmooth: true,
-        });
-        b.setAttribute("onclick", "expand_toc()");
-        b.innerHTML = "Expand all"
-    }
-
-    function go_top() {
-        window.scrollTo(0, 0);
-    }
-
-    function go_bottom() {
-        window.scrollTo(0, document.body.scrollHeight);
-    }
-
-</script>
-    
 
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">工具集合</h1>
+            <h1 class="post-title">SRC挖洞</h1>
             
                 <div class="post-meta">
                     
@@ -184,7 +122,7 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">2025-12-12&nbsp;&nbsp;00:00:00</a>
+                        Date: <a href="#">2020-07-4&nbsp;&nbsp;12:15:08</a>
                         </span>
                     
                     
@@ -193,46 +131,24 @@
         </header>
 
         <div class="post-content">
-            <h2 id="扫描类"><a href="#扫描类" class="headerlink" title="扫描类"></a>扫描类</h2><ul>
-<li>burp<ul>
-<li>官网：</li>
-<li>教程：</li>
-</ul>
-</li>
-</ul>
-<h2 id="信息收集类"><a href="#信息收集类" class="headerlink" title="信息收集类"></a>信息收集类</h2><p>内置在kali中</p>
-<ul>
-<li><p>Maltego</p>
-<ul>
-<li><a href="https://www.paterva.com" target="_blank" rel="noopener">https://www.paterva.com</a></li>
-<li>教程：<a href="https://www.jianshu.com/p/93ab0265375b" target="_blank" rel="noopener">https://www.jianshu.com/p/93ab0265375b</a></li>
-</ul>
-</li>
-<li><p>Recon-Ng</p>
-<ul>
-<li><a href="https://bitbucket.org/LaNMaSteR53/recon-ng.git" target="_blank" rel="noopener">https://bitbucket.org/LaNMaSteR53/recon-ng.git</a></li>
-<li>教程：<a href="https://www.freebuf.com/sectool/141544.html" target="_blank" rel="noopener">https://www.freebuf.com/sectool/141544.html</a></li>
-</ul>
-</li>
-<li><p>theHarvester</p>
-<ul>
-<li><a href="https://github.com/laramies/theHarvester" target="_blank" rel="noopener">https://github.com/laramies/theHarvester</a></li>
-<li>教程：<a href="https://cloud.tencent.com/developer/news/47698" target="_blank" rel="noopener">https://cloud.tencent.com/developer/news/47698</a></li>
-</ul>
-</li>
-</ul>
-<h2 id="目录扫描"><a href="#目录扫描" class="headerlink" title="目录扫描"></a>目录扫描</h2><ul>
-<li>dirmap<ul>
-<li><a href="https://github.com/H4ckForJob/dirmap" target="_blank" rel="noopener">https://github.com/H4ckForJob/dirmap</a></li>
-</ul>
-</li>
-</ul>
-<p>搜索引擎</p>
-<ul>
-<li>fofa</li>
-<li>shodan</li>
-<li>钟馗之眼</li>
-</ul>
+            <p>安徽信息工程学院</p>
+<p><a href="https://www.aiit.edu.cn/" target="_blank" rel="noopener">https://www.aiit.edu.cn/</a></p>
+<p>112.26.60.215</p>
+<p>子域名</p>
+<p>招生处：<a href="https://zsxx.aiit.edu.cn/" target="_blank" rel="noopener">https://zsxx.aiit.edu.cn/</a>  后台 /login.php  60.169.24.5</p>
+<p>图书馆：<a href="https://lib.aiit.edu.cn/" target="_blank" rel="noopener">https://lib.aiit.edu.cn/</a> </p>
+<p>教务处：<a href="https://dean.aiit.edu.cn/" target="_blank" rel="noopener">https://dean.aiit.edu.cn/</a></p>
+<p>团委：<a href="https://youth.aiit.edu.cn/" target="_blank" rel="noopener">https://youth.aiit.edu.cn/</a></p>
+<p>信息公开网：<a href="https://disclosure.aiit.edu.cn/" target="_blank" rel="noopener">https://disclosure.aiit.edu.cn/</a></p>
+<p>资产管理处：<a href="https://amc.aiit.edu.cn/" target="_blank" rel="noopener">https://amc.aiit.edu.cn/</a></p>
+<p>邮箱登录：<a href="http://mail.aiit.edu.cn/" target="_blank" rel="noopener">http://mail.aiit.edu.cn/</a>     @aiit.edu.cn</p>
+<p>教学质量评估：<a href="https://assess.aiit.edu.cn/" target="_blank" rel="noopener">https://assess.aiit.edu.cn/</a> </p>
+<p>校园统一身份认证登录：<a href="http://ims.aiit.edu.cn/" target="_blank" rel="noopener">http://ims.aiit.edu.cn/</a></p>
+<p>图书馆管理系统登录：<a href="http://libsearch.aiit.edu.cn/homepage/index.html" target="_blank" rel="noopener">http://libsearch.aiit.edu.cn/homepage/index.html</a>  登录平台</p>
+<p>本科教学工作评估：<a href="https://qe.aiit.edu.cn/" target="_blank" rel="noopener">https://qe.aiit.edu.cn/</a></p>
+<p>文明校园：<a href="https://cc.aiit.edu.cn/" target="_blank" rel="noopener">https://cc.aiit.edu.cn/</a></p>
+<p>教务管理平台：<a href="http://teach.aiit.edu.cn/" target="_blank" rel="noopener">http://teach.aiit.edu.cn/</a>  登录平台</p>
+<p>学生处：<a href="https://students.aiit.edu.cn/" target="_blank" rel="noopener">https://students.aiit.edu.cn/</a></p>
 
         </div>
 
@@ -252,10 +168,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2025/12/12/Google-XSS-game/">Google-XSS-game</a>
+                <a class="prev" rel="prev" href="/2020/07/04/vue%E5%AE%9E%E6%88%98%E7%AC%94%E8%AE%B0/">vue实战笔记</a>
             
             
-            <a class="next" rel="next" href="/2025/12/12/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">渗透测试学习笔记</a>
+            <a class="next" rel="next" href="/2020/07/03/vue%E7%AC%94%E8%AE%B0/">vue笔记</a>
             
         </section>
 
