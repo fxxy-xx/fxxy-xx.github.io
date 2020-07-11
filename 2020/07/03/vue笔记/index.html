@@ -212,7 +212,7 @@
 <li>data：数据</li>
 <li>props</li>
 <li>template：字符串，配置模板</li>
-<li>methods：配置方法</li>
+<li>methods：方法</li>
 <li>computed：配置计算属性</li>
 </ul>
 <p>计算属性和方法的区别：计算属性使用时，时当作属性使用</p>
@@ -252,25 +252,30 @@
 <li><p>v-if：判断元素是否需要渲染</p>
 </li>
 <li><p>v-show：判断元素是否应该显示</p>
-<ul>
-<li><blockquote>
-<p>v-if 是动态添加，当值为 false 时，是完全移除该元素，即 dom 树中不存在该元素。</p>
+<blockquote>
+<p> v-if 是动态添加，当值为 false 时，是完全移除该元素，即 dom 树中不存在该元素。</p>
+</blockquote>
+<blockquote>
+<p>v-show 仅是隐藏 / 显示，值为 false 时，该元素依旧存在于 dom 树中。若其原有样式设置了 display: none 则会导致其无法正常显示。</p>
 </blockquote>
 </li>
-</ul>
+<li><p>v-for：循环遍历，就地更新，如果元素的值发生改变，不会移动dom节点进行更新，而是根据绑定的key值进行更新。</p>
 </li>
+<li><p>v-bind:key：用于帮助在重新渲染时元素的比对，通常和v-for配合使用，提高渲染效率</p>
+</li>
+<li><p>v-model：实现双写绑定，自动绑定value属性值，并注册input事件</p>
+</li>
+<li><p>v-once：执行一次性地插值，当数据改变时，插值处的内容不会更新</p>
+</li>
+<li><p>v-html：渲染输出绑定的html代码</p>
+</li>
+<li></li>
 </ol>
 </li>
 </ol>
 </li>
 </ol>
-<pre><code>     &gt; v-show 仅是隐藏 / 显示，值为 false 时，该元素依旧存在于 dom 树中。若其原有样式设置了 display: none 则会导致其无法正常显示。
-
-5. v-for：循环遍历
-
-6. v-bind:key：用于帮助在重新渲染时元素的比对，通常和v-for配合使用，提高渲染效率
-
-7. v-model：实现双写绑定，自动绑定value属性值，并注册input事件</code></pre><h2 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h2><h3 id="ES模块化"><a href="#ES模块化" class="headerlink" title="ES模块化"></a>ES模块化</h3><h4 id="导出"><a href="#导出" class="headerlink" title="导出"></a>导出</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//默认导出</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span>(<span class="params">a,b</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">return</span> a+b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//具名导出 &#123; double:fn&#125;</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">double</span>(<span class="params">a</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">return</span> a*<span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//&#123;n : 3&#125;</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">var</span> n = <span class="number">3</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h2><h3 id="ES模块化"><a href="#ES模块化" class="headerlink" title="ES模块化"></a>ES模块化</h3><h4 id="导出"><a href="#导出" class="headerlink" title="导出"></a>导出</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//默认导出</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span>(<span class="params">a,b</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">return</span> a+b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//具名导出 &#123; double:fn&#125;</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">double</span>(<span class="params">a</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">return</span> a*<span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//&#123;n : 3&#125;</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">var</span> n = <span class="number">3</span>;</span><br></pre></td></tr></table></figure>
 
 <h4 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h4><p>须先在文件中导出才能导入</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> xxx <span class="keyword">from</span> <span class="string">'js文件路径'</span> <span class="comment">//导入路径文件中的default</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123;double&#125;  <span class="keyword">from</span> <span class="string">'js文件路径'</span>  <span class="comment">//具名导入</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> obj = <span class="keyword">from</span> <span class="string">'js文件路径'</span>  <span class="comment">//导入全部</span></span><br></pre></td></tr></table></figure>
@@ -313,6 +318,33 @@
 <p>接收数据的组件</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">	&lt;p&gt;&#123;name&#125;&lt;&#x2F;name&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line"></span><br><span class="line">new Vue(&#123;</span><br><span class="line">	props:[&#39;name&#39;]	</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 
+<h2 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h2><ul>
+<li>beforeCreate：</li>
+<li>created：app实例被挂载之前</li>
+<li>beforeMount：</li>
+<li>mounted：</li>
+<li>beforeDestory：</li>
+<li>destoryed：</li>
+</ul>
+<h2 id="模板语法"><a href="#模板语法" class="headerlink" title="模板语法"></a>模板语法</h2><ul>
+<li><p>格式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123; &#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>可支持的内容：</p>
+<ul>
+<li>1.用户自定义的数据，需通过v-bind绑定到节点上 </li>
+<li>2.js全局变量，如join函数，date函数等</li>
+</ul>
+</li>
+<li><p>js表达式（不能是语句或者流控制句）</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;可以</span><br><span class="line">&#123;&#123; number + 1 &#125;&#125;</span><br><span class="line">&#123;&#123; ok ? &#39;YES&#39; : &#39;NO&#39; &#125;&#125;</span><br><span class="line">&#123;&#123; message.split(&#39;&#39;).reverse().join(&#39;&#39;) &#125;&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;不可以</span><br><span class="line">&#123;&#123; var a &#x3D; 1 &#125;&#125;</span><br><span class="line">&#123;&#123; if (ok) &#123; return message &#125; &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
 <h2 id="vue-cli"><a href="#vue-cli" class="headerlink" title="vue-cli"></a>vue-cli</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 安装</span><br><span class="line">npm i -g @vue-cli</span><br><span class="line"></span><br><span class="line"># 创建项目</span><br><span class="line">vue create my-project</span><br></pre></td></tr></table></figure>
 
 <p>工程结构</p>
@@ -352,7 +384,7 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2020/07/04/SRC%E6%8C%96%E6%B4%9E/">SRC挖洞</a>
+                <a class="prev" rel="prev" href="/2020/07/04/vue%E5%AE%9E%E6%88%98%E7%AC%94%E8%AE%B0/">vue实战笔记</a>
             
             
             <a class="next" rel="next" href="/2020/07/01/%E4%BB%A3%E7%90%86%E5%AD%A6%E4%B9%A0/">代理学习</a>

