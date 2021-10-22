@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>kali下的信息收集工具学习 | fxxy</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="fxxy" type="application/atom+xml">
+</head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url()">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>fxxy</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>kali下的信息收集工具学习</h1>
+    </header>
+
+    <section>
+      <p>-</p>
+<span id="more"></span>
+
+<h2 id="nmap"><a href="#nmap" class="headerlink" title="nmap"></a>nmap</h2><p>nmap是一款端口扫描神器。</p>
+<p>列举常用的几种用法</p>
+<p><strong>常用指令</strong></p>
+<ul>
+<li>nmap -sP IP //查看一个主机是否在线</li>
+<li>nmap IP //查看一个主机上开放的端口</li>
+<li>nmap -sV -O IP //判断目标操作系统类型</li>
+<li>nmap -sS IP //半开放syn扫描</li>
+<li>nmap -p 1-1000 IP //扫描指定端口范围</li>
+<li>nmap -p 80 IP //扫描特定端口</li>
+<li>nmap -sV IP //查看目标开放端口对应的协议及版本信息</li>
+</ul>
+<p><strong>三个判断防火墙的扫描</strong></p>
+<ul>
+<li>nmap -sF IP</li>
+<li>nmap -sA IP</li>
+<li>nmap -sW IP //ACK,探测防火墙扫描</li>
+</ul>
+<p><strong>其他参数</strong></p>
+<ul>
+<li>-sT 全连接扫描，更慢，会被服务器记录日志，但不易被入侵检测系统检测到</li>
+<li>-Pn 跳过Ping测试(防火墙)，扫描指定目标</li>
+<li>-v 详细模式V越多就越详细</li>
+<li>-p 80 ping指定端口</li>
+<li>–script=script_name 使用脚本</li>
+</ul>
+<p>脚本列表<a target="_blank" rel="noopener" href="http://nmap.org/nsedoc/scripts/">http://nmap.org/nsedoc/scripts/</a></p>
+<p><strong>脚本使用实例：</strong></p>
+<ul>
+<li>nmap –script=auth IP //负责处理鉴权证书（绕开鉴权）的脚本,也可以作为检测部分应用弱口令</li>
+<li>http-php-version //获得PHP版本信息</li>
+<li>Http-enum //枚举Web站点目录</li>
+<li>smtp-strangeport //判断SMTP是否运行在默认端口</li>
+<li>dns-blacklist //发现IP地址黑名单</li>
+<li>nmap –script=vuln 192.168.137.* //扫描常见漏洞</li>
+<li>smb-check-vulns //检测smb漏洞</li>
+<li>samba-vuln-cve-2012-1182 //扫描Samba堆溢出漏洞</li>
+</ul>
+<p>测试WAF是否存在</p>
+<ul>
+<li>nmap -p 80,443 –script=http-waf-detect 192.168.0.100</li>
+<li>nmap -p 80,443 –script=http-waf-fingerprint <a target="_blank" rel="noopener" href="http://www.victom.com/">www.victom.com</a></li>
+</ul>
+<h3 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h3><p>扫描自己网段下的C段网络</p>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/clip_image002.png" alt="img"></p>
+<p>选取一个ip进行信息收集，查看哪些端口处于开放</p>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/clip_image004.png" alt="img"></p>
+<p>查看80端口是否开放</p>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/clip_image006.png" alt="img"></p>
+<p>等等等</p>
+<h2 id="dmitry"><a href="#dmitry" class="headerlink" title="dmitry"></a>dmitry</h2><p>DMitry（Deepmagic Information Gathering Tool）是一个一体化的信息收集工具。它可以用来收集以下信息：</p>
+<ul>
+<li>根据IP（或域名）来查询目标主机的Whois信息</li>
+<li>在Netcraft.com的网站上挖掘主机信息</li>
+<li>查找目标域中用的子域</li>
+<li>查找目标域的电子邮件地址</li>
+<li>探测目标主机上打开的端口、被屏蔽的端口和关闭的端口</li>
+</ul>
+<p><strong>参数</strong></p>
+<p>dmtry -h</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"> -o    //将输出保存到％host.txt或由-o文件指定的文件</span><br><span class="line"></span><br><span class="line"> -i   //对主机的IP地址执行whois查找</span><br><span class="line"></span><br><span class="line"> -w   //对主机的域名执行whois查找</span><br><span class="line"></span><br><span class="line"> -n  //在主机上检索Netcraft.com信息</span><br><span class="line"></span><br><span class="line"> -s   //执行搜索可能的子域</span><br><span class="line"></span><br><span class="line"> -e   //执行搜索可能的电子邮件地址</span><br><span class="line"></span><br><span class="line"> -p  //在主机上执行TCP端口扫描</span><br><span class="line"></span><br><span class="line">\* -f   //在显示输出报告过滤端口的主机上执行TCP端口扫描</span><br><span class="line"></span><br><span class="line">\* -b   //读取从扫描端口接收的banner</span><br><span class="line"></span><br><span class="line">\* -t 0-9 //0-9扫描TCP端口时设置TTL（默认为2）</span><br><span class="line"></span><br><span class="line">*Requires the -p flagged to be passed //*标记的指令需要-p标记才能传递</span><br></pre></td></tr></table></figure>
+
+<h3 id="实践-1"><a href="#实践-1" class="headerlink" title="实践"></a>实践</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dmitry -p baidu.com -f -b</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/clip_image008.png" alt="img"></p>
+<h2 id="fierce"><a href="#fierce" class="headerlink" title="fierce"></a>fierce</h2><p>fierce是RSnake创立的快速有效地DNS暴力破解工具。<strong>fierce工具首先根据域名的IP地址，查询相关的域名服务器，然后利用字典进行攻击</strong></p>
+<p>查看参数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">fierce -h</span><br><span class="line">Options:</span><br><span class="line"></span><br><span class="line">-connect [header.txt]     对非RFC1918地址进行HTTP连接（耗时长、流量大），默认返回服务器的响应头部。可通过文件指定HTTP请求头的Host信息，如：fierce -dns example.com -connect headers.txt</span><br><span class="line"></span><br><span class="line">-delay        指定两次查询之间的时间间隔</span><br><span class="line"></span><br><span class="line">-dns         指定查询的域名</span><br><span class="line"></span><br><span class="line">-dnsfile &lt;dnsfile.txt&gt;     用文件指定反向查询的DNS服务器列表</span><br><span class="line"></span><br><span class="line">-dnsserver  指定用来初始化SOA查询的DNS服务器。（仅用于出初始化，后续查询将使用目标的DNS服务器）</span><br><span class="line"></span><br><span class="line">-file &lt;domain.txt&gt;       将结果输出至文件</span><br><span class="line"></span><br><span class="line">-fulloutput             与-connect结合，输出服务器返回的所有信息</span><br><span class="line"></span><br><span class="line">-help                 打印帮助信息</span><br><span class="line"></span><br><span class="line">-nopattern            不适用搜索模式查找主机。（此参数暂时没有用明白）</span><br><span class="line"></span><br><span class="line">-range &lt;1.1.1.1/24&gt;     对内部IP范围做IP反查(此参数尚未用明白)。必须与dnsserver参数配合，指定内部DNS服务器，如： fierce -range 111.222.333.0-255 -dnsserver ns1.example.com</span><br><span class="line"></span><br><span class="line">-search       指定其他的域，在其他的域内进行查找（此参数没有用明白），如：  fierce -dns examplecompany.com -search corpcompany,blahcompany</span><br><span class="line"></span><br><span class="line">-tcptimeout    指定查询的超时时间</span><br><span class="line"></span><br><span class="line">-threads [number]      指定扫描的线程数，默认单线程</span><br><span class="line"></span><br><span class="line">-traverse [number]      指定扫描的上下IP范围，默认扫描上下5各个。</span><br><span class="line"></span><br><span class="line">-version              打印fierce版本</span><br><span class="line"></span><br><span class="line">-wide                扫描入口IP地址的C段。产生大流量、会收集到更多信息.</span><br><span class="line"></span><br><span class="line">-wordlist &lt;sub.txt&gt;     使用指定的字典进行子域名爆破</span><br></pre></td></tr></table></figure>
+
+<h3 id="实践-2"><a href="#实践-2" class="headerlink" title="实践"></a>实践</h3><p>枚举文件内的子域名进行爆破，线程数为3，如果要输出到文件保存，则可在后面加上-file test.txt</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fierce -dns baidu.com -wordlist dns.txt -threads 3</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/clip_image010.png" alt="img"></p>
+<h2 id="dnsenum"><a href="#dnsenum" class="headerlink" title="dnsenum"></a>dnsenum</h2><p>它可以查询网站的主机地址信息、域名服务器、mx record（函件交换记录），在域名服务器上执行axfr请求，通过谷歌脚本得到扩展域名信息（google hacking），提取自域名并查询，计算C类地址并执行whois查询，执行反向查询，把地址段写入文件。</p>
+<p><strong>参数</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">dnsenum -h</span><br><span class="line">--dnsserver  &lt;server&gt;</span><br><span class="line"></span><br><span class="line">      　　//指定一个DNS服务器查询A, NS and　MX记录</span><br><span class="line"></span><br><span class="line"> --enum    //等同于--threads 5 -s 15 -w</span><br><span class="line"></span><br><span class="line"> -h, --help   //显示帮助信息</span><br><span class="line"></span><br><span class="line"> --noreverse  //跳过反向查询</span><br><span class="line"></span><br><span class="line"> --nocolor  　//禁止ADSIColor输出</span><br><span class="line"></span><br><span class="line"> --private   //在文件domain_ips.txt的末尾显示并保存私有密码</span><br><span class="line"></span><br><span class="line"> --subfile &lt;file&gt; //将所有有效子域写入此文件</span><br><span class="line"></span><br><span class="line"> -t, --timeout &lt;value&gt;  //设置tcp和udp超时值</span><br><span class="line"></span><br><span class="line"> --threads &lt;value&gt; 　//设置线程数</span><br><span class="line"></span><br><span class="line"> -v, --verbose  //显示所有进度和所有错误消息.</span><br><span class="line"></span><br><span class="line">GOOGLE SCRAPING OPTIONS: </span><br><span class="line"></span><br><span class="line"> -p, --pages &lt;value&gt;   //抓取名称时要处理的google搜索页面的数量，默认为5页，必须指定-s开关。</span><br><span class="line"></span><br><span class="line"> -s, --scrap &lt;value&gt; //要从Google中删除的子域的最大数量</span><br><span class="line"></span><br><span class="line">BRUTE FORCE OPTIONS:</span><br><span class="line"></span><br><span class="line"> -f, --file &lt;file&gt; 　//从此文件读取子域执行暴力枚举　</span><br><span class="line"></span><br><span class="line"> -u, --update &lt;a|g|r|z&gt;     //使用有效的子域更新,使用-f指定文件。</span><br><span class="line"></span><br><span class="line">  a (all)   //使用所有结果更新。</span><br><span class="line"></span><br><span class="line">  g    //仅使用Google抓取结果更新</span><br><span class="line"></span><br><span class="line">  r    //仅使用反向查找结果进行更新。</span><br><span class="line"></span><br><span class="line">  z     //仅使用区域转移结果进行更新</span><br><span class="line"></span><br><span class="line"> -r, --recursion  //允许使用递归查询</span><br><span class="line"></span><br><span class="line">WHOIS NETRANGE OPTIONS:</span><br><span class="line"></span><br><span class="line"> -d, --delay &lt;value&gt;  //在whois查询之间等待的最大秒数，随机定义为3秒。</span><br><span class="line"></span><br><span class="line"> -w, --whois    //对c类网络范围执行whois查询</span><br><span class="line"></span><br><span class="line">      // **警告**：这可以产生非常大的netranges，花费大量的时间来执行反向查找。</span><br><span class="line"></span><br><span class="line">REVERSE LOOKUP OPTIONS:</span><br><span class="line"></span><br><span class="line"> -e, --exclude &lt;regexp&gt;　　//从反向查找结果中排除匹配正则表达式表达式的PTR记录，这对无效主机名有用。</span><br><span class="line"></span><br><span class="line">OUTPUT OPTIONS:</span><br><span class="line"></span><br><span class="line"> -o --output &lt;file&gt;  　　//以XML保存输出结果</span><br></pre></td></tr></table></figure>
+
+<h3 id="实践-3"><a href="#实践-3" class="headerlink" title="实践"></a>实践</h3><p>枚举dns中的子域名进行暴力破解，并将有效子域名写入文件，线程设置为2</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnsenum -f dns.txt cuit.edu.cn -threads 2 --subfile cuit.txt</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/clip_image014.png" alt="img"></p>
+<p><strong><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/clip_image016.png" alt="img"></strong></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2019-07-07T16:00:00.000Z" itemprop="datePublished">
+              2019-07-08
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/web%E5%AE%89%E5%85%A8/">web安全</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2021 - fxxy </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

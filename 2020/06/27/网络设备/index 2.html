@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>网络设备期末 | fxxy</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="fxxy" type="application/atom+xml">
+</head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url()">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>fxxy</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>网络设备期末</h1>
+    </header>
+
+    <section>
+      <p>网络设备配置期末复习笔记。。</p>
+<span id="more"></span>
+
+<h2 id="配置三层交换机"><a href="#配置三层交换机" class="headerlink" title="配置三层交换机"></a>配置三层交换机</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 三层交换机与其他交换机联通</span></span><br><span class="line">ip routing  </span><br><span class="line">int  与交换机连接的接口</span><br><span class="line"></span><br><span class="line">switchport trunk encapsulation dot1q</span><br><span class="line"></span><br><span class="line">switchport mode trunk</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 配置网关 联通其他vlan</span></span><br><span class="line">int vlan 2</span><br><span class="line">ip address 26.1.2.1（网关） 255.255.255.0</span><br><span class="line">no shutdown</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 配置自己的vlan时是用自己的IP  其他事网关</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="端口聚合"><a href="#端口聚合" class="headerlink" title="端口聚合"></a>端口聚合</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">interface port-channel 1</span><br><span class="line">interface range f0/</span><br><span class="line">switchport mode trunk</span><br><span class="line">channel-group 1 mode on</span><br></pre></td></tr></table></figure>
+
+<h2 id="s"><a href="#s" class="headerlink" title="s"></a>s</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">access-list 101 peimit tcp 26.1.2.0（不被允许的机器） 0.0.0.255 host 26.1.4.7(服务器) eq www</span><br><span class="line">access-list 101 peimit tcp 26.1.2.0（不被允许的机器） 0.0.0.255 host 26.1.4.7(服务器) eq www</span><br><span class="line"></span><br><span class="line">source-list 101 permit icmp any</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int f0/</span><br><span class="line">ip access-group 101 in / out</span><br></pre></td></tr></table></figure>
+
+<h2 id="设置生成树"><a href="#设置生成树" class="headerlink" title="设置生成树"></a>设置生成树</h2><ul>
+<li>打开生成树协议（只在三层交换机中设置）</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">spanning-tree vlan 1 (默认为1)</span><br><span class="line">spanning-tree mode rapid-pvst</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>关闭vlan的生成树协议</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">no spanning-tree vlan 10  //把自己创建的vlan关了</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>设置三层交换机为根交换机</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">spanning-tree vlan 1 root primary</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置ospf"><a href="#配置ospf" class="headerlink" title="配置ospf"></a>配置ospf</h2><p>交换机相连的端口需改为trunk模式，两台三层交换机设置为一个网段的IP，加一个公用的vlan100，再设置端口</p>
+<p>int vlan 100<br>ip address 26.1.100.1（路由IP） 255.255.255.0<br>no shutdown</p>
+<p>//作用于两台三层交换机，使两端互通</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">router ospf 1</span><br><span class="line"><span class="meta">#</span><span class="bash"> 分别将每个vlan的IP加进来</span></span><br><span class="line">network 26.1.2.0  0.0.0.255 area 0</span><br><span class="line"></span><br><span class="line">删除</span><br><span class="line">no network</span><br></pre></td></tr></table></figure>
+
+<h2 id="设置静态路由"><a href="#设置静态路由" class="headerlink" title="设置静态路由"></a>设置静态路由</h2><p>需要先配置s0/2的IP</p>
+<p>ospf使各个端口可以联通</p>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/image-20200628101529805.png" alt="image-20200628101529805"></p>
+<ul>
+<li>内网出去</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ip route 201.168.1.0(需要访问的外网服务器IP) 255.255.255.0（网关） 26.1.2.254 （下一个路由）</span><br></pre></td></tr></table></figure>
+
+<h2 id="NAT配置内外网"><a href="#NAT配置内外网" class="headerlink" title="NAT配置内外网"></a>NAT配置内外网</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">int  s2/0 </span><br><span class="line">ip nat  outside</span><br><span class="line"></span><br><span class="line">int f0/0</span><br><span class="line">ip nat inside</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置动态路由"><a href="#配置动态路由" class="headerlink" title="配置动态路由"></a>配置动态路由</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">access-list i peimit 26.1.2.0 0.0.0.255</span><br><span class="line">nat pool 1(代理池名称) 200.168.1.10(最小网段) 200.168.1.20(最大网段) netmask 255.255.255.0</span><br><span class="line">ip nat inside source list 1 pool 1</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置telnet-过滤"><a href="#配置telnet-过滤" class="headerlink" title="配置telnet 过滤"></a>配置telnet 过滤</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">access-list 101 deny tcp 172.16.63.0 0.0.0.255 host 10.2.63.3 eq 22</span><br><span class="line">access-list 101 deny tcp 172.16.63.0 0.0.0.255 host 10.2.63.3 eq 23</span><br><span class="line">access-list 101 permit ip any any </span><br><span class="line">int s0/0/0</span><br><span class="line">ip access-group 101 in</span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置http、ftp过滤"><a href="#配置http、ftp过滤" class="headerlink" title="配置http、ftp过滤"></a>配置http、ftp过滤</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">access-list 101 deny tcp 172.16.63.0 0.0.0.255 host 192.168.63.100 eq www</span><br><span class="line">access-list 101 deny tcp 172.16.63.0 0.0.0.255 host 192.168.63.100 eq ftp</span><br><span class="line"></span><br><span class="line">access-list 101 permit ip any any</span><br><span class="line">int s0/0/0</span><br><span class="line">ip access-group 101 in</span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2020-06-26T16:00:00.000Z" itemprop="datePublished">
+              2020-06-27
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2021 - fxxy </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

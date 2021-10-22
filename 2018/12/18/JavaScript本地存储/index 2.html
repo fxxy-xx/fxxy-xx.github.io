@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>JavaScript实现web浏览器本地存储 | fxxy</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="fxxy" type="application/atom+xml">
+</head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url()">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>fxxy</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>JavaScript实现web浏览器本地存储</h1>
+    </header>
+
+    <section>
+      <h1 id=""><a href="#" class="headerlink" title=""></a></h1><p>山山师傅出的第一个小任务，用JavaScript实现web浏览器的本地存储：模拟百度搜索历史记录，将搜索过的内容用本地存储保存并显示出来。这是一篇小白水文。<span id="more"></span></p>
+<h2 id="localstorage"><a href="#localstorage" class="headerlink" title="localstorage"></a>localstorage</h2><p>localstorage的主要函数有</p>
+<blockquote>
+<p>localstorage.setItem(‘属性名’,’属性值’) : 存入lo</p>
+</blockquote>
+<blockquote>
+<p>localstorage.getItem(‘属性名’)：读取</p>
+</blockquote>
+<blockquote>
+<p>localstorage.clear()：删除</p>
+</blockquote>
+<p>本次存入的数据使用数组方式存入，但是localstorage的存储不支持数组类型，所以要用到JSON的两个函数JSON.stringify()和JSON.parse()，在存数据时将数组序列化成字符串，取出数据时将数据序列化成对象，然后再将对象转化为数组，便于比较和去重。<br>下面两张图来展现一下这几个函数的用法</p>
+<p><img src="https://fxxy-blog.oss-cn-hangzhou.aliyuncs.com/1571747587921-f2fe03a7-4dfc-41b3-88ef-a517172dcee7.png" alt="img"></p>
+<p><strong>PS：此处插播一个遇到的小小问题，就是之前测试时存入数据如果没有用JSON.stringify()将数据转换成相应的JSON 格式的话，那后面如果想用JSON.parse()读取数据是会报错的，因为存入的数据不是JSON格式的，所以解析的时候会报错。</strong></p>
+<h2 id="JS代码"><a href="#JS代码" class="headerlink" title="JS代码"></a>JS代码</h2><h3 id="存储"><a href="#存储" class="headerlink" title="存储"></a>存储</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">saveHistory</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    mySearch = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;search_content&#x27;</span>).value;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> searchs = [];</span><br><span class="line">    <span class="keyword">var</span> storagesearchs = <span class="built_in">JSON</span>.parse(<span class="built_in">localStorage</span>.getItem(<span class="string">&#x27;searchs&#x27;</span>));</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i <span class="keyword">in</span> storagesearchs)&#123;</span><br><span class="line">        searchs.push(storagesearchs[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (searchs === <span class="literal">undefined</span> || searchs.length == <span class="number">0</span>)&#123;</span><br><span class="line">        searchs.push(mySearch);</span><br><span class="line">        <span class="built_in">localStorage</span>.setItem(<span class="string">&#x27;searchs&#x27;</span>,<span class="built_in">JSON</span>.stringify(searchs));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        flag = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (searchs.length &lt;= <span class="number">8</span>)&#123;</span><br><span class="line">            <span class="comment">//去重</span></span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">let</span> i <span class="keyword">in</span> searchs)&#123;</span><br><span class="line">                <span class="keyword">if</span>(searchs[i] === mySearch)&#123;</span><br><span class="line">                    flag = <span class="number">0</span>;                        </span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(flag)&#123;</span><br><span class="line">                <span class="keyword">if</span>(searchs.length == <span class="number">8</span>)&#123;</span><br><span class="line">                    searchs.splice(<span class="number">0</span>,<span class="number">1</span>);</span><br><span class="line">                    searchs.push(mySearch);</span><br><span class="line">                    <span class="built_in">localStorage</span>.setItem(<span class="string">&#x27;searchs&#x27;</span>,<span class="built_in">JSON</span>.stringify(searchs));</span><br><span class="line"></span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span>&#123;</span><br><span class="line">                    searchs.push(mySearch);</span><br><span class="line">                    <span class="built_in">localStorage</span>.setItem(<span class="string">&#x27;searchs&#x27;</span>,<span class="built_in">JSON</span>.stringify(searchs));</span><br><span class="line"></span><br><span class="line">                &#125;</span><br><span class="line">                                </span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">                     </span><br><span class="line">    &#125;</span><br><span class="line">    location.reload();<span class="comment">//函数执行后刷新一次页面</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="取出"><a href="#取出" class="headerlink" title="取出"></a>取出</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">showHistory</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"><span class="comment">//    alert(&#x27;show&#x27;);</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">var</span> searchs = [];</span><br><span class="line">    <span class="keyword">var</span> storagesearchs = <span class="built_in">JSON</span>.parse(<span class="built_in">localStorage</span>.getItem(<span class="string">&#x27;searchs&#x27;</span>));</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i <span class="keyword">in</span> storagesearchs)&#123;</span><br><span class="line">        searchs.push(storagesearchs[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">var</span> len = searchs.length;</span><br><span class="line">    <span class="keyword">var</span> ul = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;search_list&#x27;</span>);</span><br><span class="line">    </span><br><span class="line">   </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i=<span class="number">0</span>; i&lt;len; i++)&#123;</span><br><span class="line">        <span class="keyword">var</span> div = <span class="built_in">document</span>.createElement(<span class="string">&#x27;div&#x27;</span>);</span><br><span class="line">        <span class="keyword">var</span> li = <span class="built_in">document</span>.createElement(<span class="string">&#x27;li&#x27;</span>);<span class="comment">//创建一个li元素</span></span><br><span class="line">        li.innerHTML = searchs[i];<span class="comment">//将搜索记录写入li中</span></span><br><span class="line">        ul.appendChild(li)<span class="comment">//在ul标签下追加li元素</span></span><br><span class="line">     &#125;        </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="html代码"><a href="#html代码" class="headerlink" title="html代码"></a>html代码</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">title</span>&gt;</span>百度搜索<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">link</span> <span class="attr">href</span>=<span class="string">&quot;https://fonts.googleapis.com/css?family=PT+Sans&quot;</span> <span class="attr">rel</span>=<span class="string">&quot;stylesheet&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;stylesheet&quot;</span> <span class="attr">href</span>=<span class="string">&quot;./css/style.css&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;scripts/main.js&quot;</span> <span class="attr">async</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">        </span><br><span class="line">    <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">        </span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;searching&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">span</span>&gt;</span></span><br><span class="line"></span><br><span class="line">                    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">name</span> = <span class="string">&quot;search&quot;</span> <span class="attr">id</span> = <span class="string">&quot;search_content&quot;</span> <span class="attr">autocomplete</span>=<span class="string">&quot;off&quot;</span> <span class="attr">placeholder</span>=<span class="string">&quot;请输入搜索内容·······&quot;</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">ul</span> <span class="attr">id</span>=<span class="string">&quot;search_list&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">                </span><br><span class="line">                    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;submit&quot;</span> <span class="attr">value</span>=<span class="string">&quot;搜索&quot;</span> <span class="attr">id</span> = <span class="string">&#x27;clicking&#x27;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">           </span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>这次的task1学到了很多东西，localstorage，对js函数也有了更深的认识，还有html，css也学到了很多，开心！！重拾代码乐趣！！</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2018-12-17T16:00:00.000Z" itemprop="datePublished">
+              2018-12-18
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2021 - fxxy </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>
